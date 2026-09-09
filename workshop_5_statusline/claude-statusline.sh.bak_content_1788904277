@@ -1,0 +1,147 @@
+#!/bin/bash
+# Claude Code statusLine script -- plain "Label: value | Label: value" text
+# (ccstatusline's default look/format, which was preferred over this
+# script's earlier powerline-block version), Catppuccin Mocha colors, with
+# ctx/5h/7d dynamically threshold-colored green/yellow/red by percentage --
+# the one thing ccstatusline (the npm tool) can't do, since each of its
+# widgets only supports one fixed color, not live threshold-based color.
+# That's the whole reason this hand-rolled script is back in use instead
+# of ccstatusline.
+#
+# All quota/context numbers come straight from the JSON Claude Code pipes
+# in on stdin (native fields since ~2.1.x: context_window.used_percentage,
+# rate_limits.five_hour.used_percentage, rate_limits.seven_day.used_percentage,
+# effort.level) -- no API polling, no credential reading, no caching
+# needed. Git branch is read live via a local `git` call.
+#
+# Portable: this file lives in the Dropbox-synced dotfiles dir (same
+# pattern as .bashrc/.nanorc), ~/.claude/scripts/statusline.sh is a
+# symlink to it. On a NEW machine: (1) make sure Dropbox has synced this
+# repo, (2) `ln -s ~/Dropbox/ubuntu_home/howtos/claude_statusline/claude-statusline.sh
+# ~/.claude/scripts/statusline.sh` (mkdir -p the scripts/ dir first if
+# needed), (3) add the statusLine block below to that machine's
+# ~/.claude/settings.json (settings.json itself is NOT synced/symlinked,
+# it's per-machine):
+#   "statusLine": { "type": "command", "command": "~/.claude/scripts/statusline.sh" }
+# Uses `~` (not an absolute /Users/kk path) so it resolves under any
+# username. Requires `jq` on PATH.
+input=$(cat)
+
+MODEL=$(echo "$input" | jq -r '.model.display_name' | tr '[:upper:]' '[:lower:]')
+DIR=$(echo "$input" | jq -r '.workspace.current_dir')
+EFFORT=$(echo "$input" | jq -r '.effort.level // empty')
+CTX_RAW=$(echo "$input" | jq -r '.context_window.used_percentage // 0')
+Q5H_RAW=$(echo "$input" | jq -r '.rate_limits.five_hour.used_percentage // empty')
+Q7D_RAW=$(echo "$input" | jq -r '.rate_limits.seven_day.used_percentage // empty')
+Q5H_RESET=$(echo "$input" | jq -r '.rate_limits.five_hour.resets_at // empty')
+Q7D_RESET=$(echo "$input" | jq -r '.rate_limits.seven_day.resets_at // empty')
+
+CTX=$(printf '%.0f' "$CTX_RAW")
+[ -n "$Q5H_RAW" ] && Q5H=$(printf '%.0f' "$Q5H_RAW")
+[ -n "$Q7D_RAW" ] && Q7D=$(printf '%.0f' "$Q7D_RAW")
+
+# Catppuccin Mocha hex values -- same palette used in the ccstatusline
+# config (~/.config/ccstatusline/settings.json) so the two look the same
+# when switching between them.
+MAUVE="cba6f7"   # model
+GREEN="a6e3a1"   # low threshold
+YELLOW="f9e2af"  # rising threshold
+PEACH="fab387"   # high threshold (orange)
+RED="f38ba8"      # critical threshold
+SKY="89dceb"      # path
+LAVENDER="b4befe" # branch
+TEXT="cdd6f4"
+
+rgb() { printf '%d;%d;%d' "0x${1:0:2}" "0x${1:2:2}" "0x${1:4:2}"; }
+fg() { echo -en "\033[38;2;$(rgb "$1")m"; }
+RESET='\033[0m'
+
+# Args: percentage -> echoes the Catppuccin hex (no #) for that threshold.
+# green/yellow/orange/red at 50/75/90 -- kept in sync with the SmallTV
+# device's own barColor()/pctColor() bands (mini_tv_claude_quota's
+# UsageMode.cpp/ZaiMode.cpp/CodexMode.cpp/AntigravityMode.cpp), so the
+# terminal statusline and the physical screen never disagree on what
+# color a given % should be.
+hex_for() {
+  local p="${1:-0}"
+  local i="${p%%.*}"
+  if [ "$i" -ge 90 ]; then echo "$RED"
+  elif [ "$i" -ge 75 ]; then echo "$PEACH"
+  elif [ "$i" -ge 50 ]; then echo "$YELLOW"
+  else echo "$GREEN"; fi
+}
+
+# Args: hex text -> colored text, no reset (caller resets once at the end).
+c() { echo -en "$(fg "$1")${2}${RESET}"; }
+
+# Args: resets_at (unix epoch seconds), [days=1 to allow a "<d>d" part] ->
+# echoes "<d>d<h>h<mm>m" / "<h>h<mm>m" / "<m>m" countdown to reset
+# (shortest form that fits), empty if already past/missing.
+countdown() {
+  local reset="$1" days="$2"
+  [ -z "$reset" ] && return
+  local delta=$(( reset - $(date +%s) ))
+  [ "$delta" -le 0 ] && return
+  local d=0 h=$(( delta / 3600 )) m=$(( (delta % 3600) / 60 ))
+  if [ "$days" = "1" ] && [ "$h" -ge 24 ]; then
+    d=$(( h / 24 )); h=$(( h % 24 ))
+  fi
+  if [ "$d" -gt 0 ]; then printf '%dd%dh%02dm' "$d" "$h" "$m"
+  elif [ "$h" -gt 0 ]; then printf '%dh%02dm' "$h" "$m"
+  else printf '%dm' "$m"; fi
+}
+
+EFF=""
+if [ -n "$EFFORT" ]; then
+  case "$EFFORT" in
+    low)    EFF_ABBR="lo" ;;
+    medium) EFF_ABBR="md" ;;
+    high)   EFF_ABBR="hi" ;;
+    xhigh)  EFF_ABBR="xh" ;;
+    max)    EFF_ABBR="mx" ;;
+    *)      EFF_ABBR="$EFFORT" ;;
+  esac
+  EFF=" ${EFF_ABBR}"
+fi
+
+BRANCH_ICON=$''   # powerline branch glyph
+
+BRANCH=""
+if git -C "$DIR" rev-parse --is-inside-work-tree > /dev/null 2>&1; then
+  br=$(git -C "$DIR" branch --show-current 2>/dev/null)
+  [ -n "$br" ] && BRANCH="${BRANCH_ICON} ${br}"
+fi
+
+CTX_HEX=$(hex_for "$CTX")
+
+LEFT="$(c "$MAUVE" "${MODEL}${EFF}")"
+LEFT="${LEFT} | $(c "$CTX_HEX" "ctx ${CTX}%")"
+
+if [ -n "$Q5H" ]; then
+  Q5H_HEX=$(hex_for "$Q5H")
+  Q5H_CD=$(countdown "$Q5H_RESET")
+  [ -n "$Q5H_CD" ] && Q5H_CD=" ${Q5H_CD}"
+  LEFT="${LEFT} | $(c "$Q5H_HEX" "5h ${Q5H}%${Q5H_CD}")"
+fi
+
+if [ -n "$Q7D" ]; then
+  Q7D_HEX=$(hex_for "$Q7D")
+  Q7D_CD=$(countdown "$Q7D_RESET" 1)
+  [ -n "$Q7D_CD" ] && Q7D_CD=" ${Q7D_CD}"
+  LEFT="${LEFT} | $(c "$Q7D_HEX" "7d ${Q7D}%${Q7D_CD}")"
+fi
+
+# Dir+branch left-aligned, right after the quota group -- right-aligning
+# it required guessing the statusline's actual usable width (tput cols
+# reports the full terminal, not the narrower area Claude Code renders
+# into), and no margin guess held up reliably, so dropped in favor of
+# simple left-to-right order.
+DIR_NAME="${DIR##*/}"
+DIR_MAX=20
+[ "${#DIR_NAME}" -gt "$DIR_MAX" ] && DIR_NAME="${DIR_NAME:0:$((DIR_MAX - 2))}.."
+LEFT="${LEFT} | $(c "$SKY" "${DIR_NAME}")"
+if [ -n "$BRANCH" ]; then
+  LEFT="${LEFT} $(c "$LAVENDER" "${BRANCH}")"
+fi
+
+printf '%s\n' "$LEFT"
