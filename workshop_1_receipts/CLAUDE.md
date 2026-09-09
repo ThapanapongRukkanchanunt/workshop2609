@@ -3,8 +3,8 @@
 ไฟล์นี้คือ "ความจำ" ของ Cowork สำหรับโฟลเดอร์นี้
 สิ่งที่เขียนไว้ในนี้ agent จะอ่านทุกครั้งที่เริ่มงานใหม่ และทำตามเอง
 
-## กติกา
+## Rules
 
-- ตอบเป็นภาษาไทย
+- Respond in English
 
-<!-- เพิ่มgolden ruleของเราต่อจากบรรทัดบน แล้วบันทึกไฟล์ -->
+<!-- Add your golden rules below this line, then save the file -->
