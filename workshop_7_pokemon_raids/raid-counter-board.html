@@ -1,0 +1,613 @@
+<title>Raid Counter Board</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=Public+Sans:ital,wght@0,400;0,500;0,700;1,400&display=swap">
+<style>
+:root{
+  --bg:#EDF0F5; --surface:#FFFFFF; --surface-2:#F5F7FA;
+  --ink:#10151F; --ink-2:#39424F; --muted:#69738A;
+  --line:#D8DEE8; --line-2:#E8EDF4;
+  --warn:#B3541E; --warn-bg:#FBEEE3;
+  --type:var(--type-l); --type-on:#FFFFFF; --type-soft:12%;
+  --shadow:0 1px 2px rgba(16,21,31,.06),0 8px 24px -12px rgba(16,21,31,.18);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0B0F17; --surface:#141A24; --surface-2:#1A212D;
+  --ink:#E9EDF4; --ink-2:#C3CBD8; --muted:#8B95A8;
+  --line:#242D3B; --line-2:#1E2633;
+  --warn:#E8A566; --warn-bg:#2A2116;
+  --type:var(--type-d); --type-on:#0B0F17; --type-soft:18%;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -14px rgba(0,0,0,.8);
+}}
+:root[data-theme="dark"]{
+  --bg:#0B0F17; --surface:#141A24; --surface-2:#1A212D;
+  --ink:#E9EDF4; --ink-2:#C3CBD8; --muted:#8B95A8;
+  --line:#242D3B; --line-2:#1E2633;
+  --warn:#E8A566; --warn-bg:#2A2116;
+  --type:var(--type-d); --type-on:#0B0F17; --type-soft:18%;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -14px rgba(0,0,0,.8);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font:400 16px/1.55 "Public Sans",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3{font-family:"Bricolage Grotesque","Public Sans",ui-sans-serif,system-ui,sans-serif;text-wrap:balance;margin:0}
+.mono{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+
+.wrap{max-width:860px;margin:0 auto;padding-inline:16px}
+
+/* ---- masthead ---- */
+.bar{
+  position:sticky; top:env(safe-area-inset-top,0px); z-index:20;
+  background:color-mix(in srgb,var(--bg) 88%,transparent);
+  backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--line);
+}
+.masthead{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;padding-block:14px 10px}
+.masthead h1{font-size:21px;font-weight:800;letter-spacing:-.02em;line-height:1}
+.masthead .sub{font-size:12.5px;color:var(--muted);letter-spacing:.01em}
+.masthead .sub b{color:var(--ink-2);font-weight:600}
+
+/* ---- type rail ---- */
+.rail{display:flex;gap:6px;overflow-x:auto;padding-block:2px 12px;scrollbar-width:thin;-webkit-overflow-scrolling:touch}
+.rail::-webkit-scrollbar{height:5px}
+.rail::-webkit-scrollbar-thumb{background:var(--line);border-radius:99px}
+.chip{
+  flex:0 0 auto; cursor:pointer; border:1px solid var(--line);
+  background:var(--surface); color:var(--ink-2);
+  border-radius:99px; padding:6px 13px 7px;
+  font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:11.5px; font-weight:500;
+  letter-spacing:.09em; text-transform:uppercase; white-space:nowrap;
+  transition:background .14s,color .14s,border-color .14s;
+}
+.chip:hover{border-color:var(--c);color:var(--ink)}
+.chip[aria-pressed="true"]{background:var(--c);border-color:var(--c);color:var(--type-on);font-weight:600}
+.chip:focus-visible,.search input:focus-visible,.foot summary:focus-visible{outline:2px solid var(--type);outline-offset:2px}
+
+/* ---- search ---- */
+.search{position:relative;padding-block:0 12px}
+.search input{
+  width:100%; padding:9px 12px 9px 34px; border-radius:9px;
+  border:1px solid var(--line); background:var(--surface); color:var(--ink);
+  font:400 14px/1.4 "Public Sans",sans-serif;
+}
+.search input::placeholder{color:var(--muted)}
+.search svg{position:absolute;left:11px;top:9px;width:15px;height:15px;stroke:var(--muted);fill:none;stroke-width:2}
+
+/* ---- type header ---- */
+.head{padding-block:26px 18px}
+.head h2{font-size:clamp(34px,9vw,52px);font-weight:800;letter-spacing:-.035em;line-height:.95;color:var(--type)}
+.matchups{display:flex;flex-direction:column;gap:7px;margin-top:16px}
+.mrow{display:flex;gap:9px;align-items:baseline;flex-wrap:wrap;font-size:13px}
+.mrow>.mlabel{
+  flex:0 0 auto;font-family:"IBM Plex Mono",monospace;font-size:10.5px;font-weight:500;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--muted);min-width:92px;
+}
+.tag{
+  display:inline-block;padding:2px 8px 3px;border-radius:5px;font-size:12px;font-weight:500;
+  background:color-mix(in srgb,var(--c) var(--type-soft),var(--surface));
+  color:var(--c); border:1px solid color-mix(in srgb,var(--c) 30%,transparent);
+}
+.mrow.dim .tag{background:var(--surface-2);color:var(--muted);border-color:var(--line-2)}
+.mrow .none{color:var(--muted);font-style:italic;font-size:12.5px}
+
+/* ---- tier bands ---- */
+.band{margin-bottom:22px}
+.band-h{
+  display:flex;align-items:center;gap:10px;margin-bottom:9px;
+  font-family:"IBM Plex Mono",monospace;font-size:10.5px;font-weight:600;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--muted);
+}
+.band-h .n{color:var(--type);font-weight:600}
+.band-h .line{flex:1;height:1px;background:var(--line)}
+
+.picks{display:flex;flex-direction:column;gap:1px;background:var(--line-2);border:1px solid var(--line);border-radius:11px;overflow:hidden;box-shadow:var(--shadow)}
+.pick{display:grid;grid-template-columns:5px 1fr;background:var(--surface)}
+.pick .rail-c{background:var(--type)}
+.pick.warn .rail-c{background:var(--warn)}
+.pick .body{padding:13px 15px 14px}
+.pick .top{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap}
+.pick .nm{font-family:"Bricolage Grotesque",sans-serif;font-size:18px;font-weight:700;letter-spacing:-.015em;line-height:1.2}
+.pick .mv{
+  font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--ink-2);
+  background:var(--surface-2);border:1px solid var(--line-2);border-radius:5px;padding:2px 7px 3px;
+}
+.pick .nt{font-size:13.5px;color:var(--muted);margin-top:6px;line-height:1.5}
+.pick.warn{background:var(--warn-bg)}
+.pick.warn .nm{color:var(--warn)}
+.pick.warn .nt{color:var(--warn)}
+.pick.warn .mv{background:transparent;border-color:color-mix(in srgb,var(--warn) 35%,transparent);color:var(--warn)}
+.flag{
+  font-family:"IBM Plex Mono",monospace;font-size:9.5px;font-weight:600;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--warn);border:1px solid color-mix(in srgb,var(--warn) 45%,transparent);
+  border-radius:4px;padding:1px 5px 2px;
+}
+
+/* ---- search results ---- */
+.res-type{
+  display:inline-block;font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:600;
+  letter-spacing:.1em;text-transform:uppercase;padding:2px 7px 3px;border-radius:4px;
+  background:var(--c);color:var(--type-on);
+}
+.res-slot{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.empty{padding:40px 0;text-align:center;color:var(--muted);font-size:14px}
+
+/* ---- notes ---- */
+.note-block{
+  border:1px solid var(--line);border-radius:11px;background:var(--surface);
+  padding:16px 18px;margin-bottom:22px;
+}
+.note-block h3{font-size:14px;font-weight:700;letter-spacing:-.01em;margin-bottom:8px}
+.note-block ul{margin:0;padding-left:18px;font-size:13.5px;color:var(--ink-2);line-height:1.6}
+.note-block li+li{margin-top:5px}
+.note-block b{color:var(--ink);font-weight:600}
+
+.foot{padding-block:8px 44px;font-size:13px;color:var(--muted)}
+.foot details{border-top:1px solid var(--line);padding-top:14px}
+.foot summary{cursor:pointer;font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.foot .inner{padding-top:12px;line-height:1.65}
+.foot p{margin:0 0 10px}
+.foot a{color:var(--type);text-decoration:underline;text-underline-offset:2px}
+.foot code{font-family:"IBM Plex Mono",monospace;font-size:12px;background:var(--surface-2);padding:1px 4px;border-radius:3px}
+
+@media (max-width:460px){
+  .mrow>.mlabel{min-width:100%}
+  .pick .nm{font-size:16.5px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div class="bar">
+  <div class="wrap">
+    <div class="masthead">
+      <h1>Raid Counter Board</h1>
+      <span class="sub">Best attackers per type · <b>Pokémon GO Hub</b> × <b>Pokebattler</b> · Sep 2026</span>
+    </div>
+    <div class="rail" id="rail" role="tablist" aria-label="Attack type"></div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="search">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+    <input id="q" type="search" placeholder="Search a Pokémon across all 18 types — e.g. Metagross, Rhyperior, Gardevoir" aria-label="Search a Pokémon across all types">
+  </div>
+</div>
+
+<main class="wrap" id="view"></main>
+
+<div class="wrap foot">
+  <details>
+    <summary>Method, caveats &amp; sources</summary>
+    <div class="inner">
+      <p>Ordering follows <b>Pokémon GO Hub's Score</b> (a blend of DPS and TDO), cross-checked against <b>Pokebattler's</b> estimator-based points. Where the two disagree it is called out in the note on the row.</p>
+      <p>Where scores sit close together, the pick that actually gets <b>STAB</b> on the type is preferred over a generalist running off-type coverage.</p>
+      <p><b>"Legendary"</b> here means the raid-exclusive pool: Legendary, Mythical <em>and</em> Ultra Beast. Kartana, Xurkitree, Blacephalon, Nihilego, Pheromosa, Naganadel, Guzzlord and Stakataka sit in Legendary slots because you cannot get them as normal spawns.</p>
+      <p>Move notation follows the sources: <code>*</code> = legacy or exclusive move, <code>+</code> = upgraded move variant.</p>
+      <p><b>Availability:</b> Shadow Legendaries rotate through Giovanni and Shadow Raids, so several entries are "best on paper" rather than catchable this week. Amber rows are either unreleased, rotated out, or genuinely not worth building — read the note before spending candy.</p>
+      <p>Sources: <a href="https://db.pokemongohub.net/best/attackers-per-type" target="_blank" rel="noopener">Pokémon GO Hub — Best Attackers Per Type</a> · <a href="https://www.pokebattler.com/raids/attackers/rankings" target="_blank" rel="noopener">Pokebattler — Best Raid Attackers</a></p>
+    </div>
+  </details>
+</div>
+
+<script>
+/* ---------- type table ---------- */
+const T = {
+  fire:     {n:'Fire',     l:'#C75B12', d:'#FF9A4D', se:['grass','ice','bug','steel'],                    res:['fire','water','rock','dragon']},
+  water:    {n:'Water',    l:'#3A6FD8', d:'#7FB0FF', se:['fire','ground','rock'],                          res:['water','grass','dragon']},
+  grass:    {n:'Grass',    l:'#3E8E29', d:'#86D96A', se:['water','ground','rock'],                         res:['fire','grass','poison','flying','bug','dragon','steel']},
+  electric: {n:'Electric', l:'#A88600', d:'#FFD84D', se:['water','flying'],                                res:['grass','electric','dragon'], imm:['ground']},
+  ice:      {n:'Ice',      l:'#2A94A8', d:'#79DCE8', se:['grass','ground','flying','dragon'],              res:['fire','water','ice','steel']},
+  dragon:   {n:'Dragon',   l:'#5A2BD6', d:'#A98BFF', se:['dragon'],                                        res:['steel'], imm:['fairy']},
+  psychic:  {n:'Psychic',  l:'#D6376B', d:'#FF83A8', se:['fighting','poison'],                             res:['psychic','steel'], imm:['dark']},
+  fighting: {n:'Fighting', l:'#B82B25', d:'#FF7A72', se:['normal','ice','rock','dark','steel'],            res:['poison','flying','psychic','bug','fairy'], imm:['ghost']},
+  ground:   {n:'Ground',   l:'#A3792C', d:'#E7C578', se:['fire','electric','poison','rock','steel'],       res:['grass','bug'], imm:['flying']},
+  rock:     {n:'Rock',     l:'#8A7A24', d:'#D6C55E', se:['fire','ice','flying','bug'],                     res:['fighting','ground','steel']},
+  steel:    {n:'Steel',    l:'#5E7186', d:'#A9BDD1', se:['ice','rock','fairy'],                            res:['fire','water','electric','steel']},
+  dark:     {n:'Dark',     l:'#5A483C', d:'#B79E8A', se:['psychic','ghost'],                               res:['fighting','dark','fairy']},
+  ghost:    {n:'Ghost',    l:'#5E4880', d:'#B39BDB', se:['psychic','ghost'],                               res:['dark'], imm:['normal']},
+  fairy:    {n:'Fairy',    l:'#B85084', d:'#F09CC4', se:['fighting','dragon','dark'],                      res:['fire','poison','steel']},
+  flying:   {n:'Flying',   l:'#7A5CE0', d:'#BFA8FF', se:['grass','fighting','bug'],                        res:['electric','rock','steel']},
+  poison:   {n:'Poison',   l:'#93308F', d:'#E07FDE', se:['grass','fairy'],                                 res:['poison','ground','rock','ghost'], imm:['steel']},
+  bug:      {n:'Bug',      l:'#6E7C12', d:'#C2D64A', se:['grass','psychic','dark'],                        res:['fire','fighting','poison','flying','ghost','steel','fairy']},
+  normal:   {n:'Normal',   l:'#6F7057', d:'#C9CBA3', se:[],                                                res:['rock','steel'], imm:['ghost']}
+};
+
+/* ---------- picks: [name, moveset, note, warn?] ---------- */
+const D = {
+fire:{mega:[
+ ['Mega Delphox','Fire Spin / Mystical Fire+','Hub’s #1 Fire attacker overall — 39.77 DPS.'],
+ ['Mega Blaziken','Fire Spin / Blast Burn*','Doubles as a top Fighting mega — two raid types, one slot.']],
+shadowLeg:[['Shadow Reshiram','Fire Fang / Fusion Flare*','Pokebattler’s #1 Fire attacker outright (1193 pts).']],
+shadow:[
+ ['Shadow Chandelure','Fire Spin / Overheat','Glass, but the highest non-Legendary Shadow DPS.'],
+ ['Shadow Blaziken','Fire Spin / Blast Burn*','Fighting coverage on the same build.']],
+legendary:[
+ ['Blacephalon','Incinerate / Mind Blown*','Ultra Beast — 35.45 DPS, paper-thin bulk.'],
+ ['Reshiram','Fire Fang / Fusion Flare*','Non-shadow version, far bulkier.'],
+ ['Heatran','Fire Spin / Magma Storm*','The durable pick — Steel typing survives.']],
+regular:[
+ ['Volcarona','Fire Spin / Overheat','Best non-Legendary non-Shadow Fire.'],
+ ['Chandelure','Fire Spin / Overheat','Cheap, plentiful, still ~26 DPS.']]},
+
+water:{mega:[
+ ['Mega Greninja','Water Shuriken / Surf+','Hub #1. Pokebattler puts Primal Kyogre first.'],
+ ['Primal Kyogre','Waterfall / Origin Pulse*','Best group boost, plus 1188 TDO.']],
+shadowLeg:[['Shadow Kyogre','Waterfall / Origin Pulse*','Top raw Water DPS you can bring six of.']],
+shadow:[
+ ['Shadow Greninja','Water Shuriken / Hydro Cannon*',''],
+ ['Shadow Kingler','Bubble / Crabhammer','Nearly identical DPS, much cheaper.']],
+legendary:[
+ ['Kyogre','Waterfall / Origin Pulse*',''],
+ ['Volcanion','Water Gun / Hydro Pump','Mythical, and bulky.'],
+ ['Origin Forme Palkia','Dragon Tail / Hydro Pump','Dragon coverage on the same build.']],
+regular:[
+ ['Inteleon','Water Gun / Hydro Cannon*','Best non-Legendary starter-tier Water.'],
+ ['Quaquaval','Water Gun / Hydro Cannon*','']]},
+
+grass:{mega:[
+ ['Mega Chesnaught','Vine Whip / Seed Bomb+','Hub #1 on Score — huge 1255 TDO.'],
+ ['Mega Sceptile','Fury Cutter / Frenzy Plant*','Pokebattler’s #1 — higher DPS, lower bulk.']],
+shadowLeg:[['Shadow Groudon','Mud Shot / Solar Beam','Only real option, and Solar Beam is off-type filler. Skip unless you already have one.',1]],
+shadow:[
+ ['Shadow Chesnaught','Vine Whip / Frenzy Plant*',''],
+ ['Shadow Sceptile','Fury Cutter / Frenzy Plant*','Shadow Tangrowth and Venusaur are within a hair.']],
+legendary:[
+ ['Kartana','Razor Leaf / Leaf Blade','Ultra Beast — highest non-Mega Grass DPS.'],
+ ['Shaymin (Sky Forme)','Magical Leaf / Grass Knot',''],
+ ['Zarude','Vine Whip / Power Whip','Mythical — best TDO of the three.']],
+regular:[
+ ['Rillaboom','Razor Leaf / Frenzy Plant*',''],
+ ['Roserade','Magical Leaf / Grass Knot','Poison coverage too.']]},
+
+electric:{mega:[
+ ['Mega Raichu Y','Thunder Shock / Zap Cannon+','#1 on both sites.'],
+ ['Mega Raichu X','Thunder Shock / Volt Tackle+','Mega Manectric (#9) is the budget stand-in.']],
+shadowLeg:[['Shadow Raikou','Thunder Shock / Wild Charge','Hub ranks Shadow Thundurus-Therian higher (#3) but Pokebattler doesn’t list it — Raikou is the safe pick.']],
+shadow:[
+ ['Shadow Electivire','Thunder Shock / Wild Charge',''],
+ ['Shadow Magnezone','Volt Switch / Wild Charge','Bulkier, and Steel typing.']],
+legendary:[
+ ['Zeraora','Volt Switch / Plasma Fists','Mythical.'],
+ ['Regieleki','Lock-On / Thunder Cage','Highest burst, low TDO.'],
+ ['Xurkitree','Thunder Shock / Discharge','Ultra Beast — 330 Attack.']],
+regular:[
+ ['Electivire','Thunder Shock / Wild Charge',''],
+ ['Magnezone','Volt Switch / Wild Charge','']]},
+
+ice:{mega:[
+ ['Mega Mewtwo Y','Psycho Cut / Ice Beam','Best Ice mega despite having no STAB.'],
+ ['Mega Abomasnow','Powder Snow / Weather Ball','The dedicated Ice mega — boosts the lobby. Mega Glalie is close behind.']],
+shadowLeg:[['Shadow Mewtwo','Psycho Cut / Ice Beam','Off-type coverage. Shadow Articuno (Frost Breath / Triple Axel) is the STAB alternative.',1]],
+shadow:[
+ ['Shadow Mamoswine','Powder Snow / Avalanche','#1 dedicated Ice shadow on both sites.'],
+ ['Shadow Weavile','Ice Shard / Triple Axel','Fastest charge cycling.']],
+legendary:[
+ ['White Kyurem','Ice Fang / Ice Burn','#1 Ice attacker overall — 38.30 DPS.'],
+ ['Black Kyurem','Dragon Tail / Freeze Shock',''],
+ ['Crowned Shield Zamazenta','Ice Fang / Behemoth Bash','Ice fast move plus enormous bulk.']],
+regular:[
+ ['Baxcalibur','Ice Fang / Avalanche',''],
+ ['Galarian Darmanitan','Ice Fang / Avalanche','Glassy, but hits hard.']]},
+
+dragon:{mega:[
+ ['Mega Rayquaza','Dragon Tail / Dragon Ascent','#1 on both sites by a landslide — 2294 pts.'],
+ ['Mega Dragonite','Dragon Tail / Outrage+','Mega Garchomp is a near-tie.']],
+shadowLeg:[['Shadow Palkia','Dragon Tail / Draco Meteor','Shadow Dialga is the bulkier alternative.']],
+shadow:[
+ ['Shadow Garchomp','Dragon Tail / Breaking Swipe',''],
+ ['Shadow Haxorus','Dragon Tail / Breaking Swipe','Higher DPS, lower TDO than Garchomp.']],
+legendary:[
+ ['Eternatus','Dragon Tail / Dynamax Cannon','Essentially ties Mega Rayquaza on Hub’s score.'],
+ ['Black Kyurem','Dragon Tail / Freeze Shock',''],
+ ['White Kyurem','Dragon Breath / Ice Burn','']],
+regular:[
+ ['Baxcalibur','Ice Fang / Glaive Rush','Best non-Legendary Dragon.'],
+ ['Haxorus','Dragon Tail / Breaking Swipe','']]},
+
+psychic:{mega:[
+ ['Mega Mewtwo Y','Psycho Cut / Future Sight+','51.88 DPS — the single highest number in the game.'],
+ ['Mega Mewtwo X','Confusion / Psystrike*','']],
+shadowLeg:[['Shadow Mewtwo','Psycho Cut / Psystrike*','']],
+shadow:[
+ ['Shadow Metagross','Zen Headbutt / Psychic','Steel typing means it survives.'],
+ ['Shadow Alakazam','Confusion / Psychic*','Pure glass cannon.']],
+legendary:[
+ ['Mewtwo','Psycho Cut / Psystrike*',''],
+ ['Deoxys (Normal Forme)','Zen Headbutt / Psycho Boost','36.15 DPS, 360 TDO — dies instantly.'],
+ ['Dusk Mane Necrozma','Psycho Cut / Sunsteel Strike','Most durable Psychic in the meta.']],
+regular:[
+ ['Metagross','Zen Headbutt / Psychic',''],
+ ['Espeon','Confusion / Psychic','']]},
+
+ghost:{mega:[
+ ['Mega Gengar','Lick / Shadow Ball',''],
+ ['Mega Mewtwo Y','Psycho Cut / Shadow Ball','Better TDO than Gengar.']],
+shadowLeg:[['Shadow Darkrai','Snarl / Shadow Ball','Dark and Ghost in one build.']],
+shadow:[
+ ['Shadow Chandelure','Hex / Shadow Ball',''],
+ ['Shadow Gengar','Lick / Shadow Ball','']],
+legendary:[
+ ['Dawn Wings Necrozma','Psycho Cut / Moongeist Beam','#1 Ghost on both sites.'],
+ ['Black Kyurem','Shadow Claw / Freeze Shock',''],
+ ['Lunala','Shadow Claw / Shadow Ball','770 TDO.']],
+regular:[
+ ['Gholdengo','Hex / Shadow Ball','Best non-Legendary Ghost.'],
+ ['Dragapult','Astonish / Shadow Ball','']]},
+
+dark:{mega:[
+ ['Mega Houndoom','Snarl / Dark Pulse+','Hub #1 — 37.93 DPS.'],
+ ['Mega Tyranitar','Bite / Brutal Swing','Pokebattler’s #1 — 1370 TDO makes it the practical choice.']],
+shadowLeg:[['Shadow Darkrai','Snarl / Foul Play','']],
+shadow:[
+ ['Shadow Hydreigon','Bite / Brutal Swing',''],
+ ['Shadow Tyranitar','Bite / Brutal Swing','']],
+legendary:[
+ ['Darkrai','Snarl / Foul Play','Mythical.'],
+ ['Hoopa Unbound','Astonish / Dark Pulse',''],
+ ['Yveltal','Snarl / Dark Pulse','Best bulk of the three.']],
+regular:[
+ ['Hydreigon','Bite / Brutal Swing',''],
+ ['Tyranitar','Bite / Brutal Swing','Kingambit (#21) is a strong budget option.']]},
+
+fighting:{mega:[
+ ['Mega Mewtwo X','Counter / Dynamic Punch+','46.08 DPS, 1384 TDO — best attacker in the game on Hub’s score.'],
+ ['Mega Lucario','Force Palm / Aura Sphere','Steel typing survives Fighting-weak bosses.']],
+shadowLeg:[['Shadow Mewtwo','Counter / Focus Blast','Shadow Raikou with Aura Sphere is the runner-up.']],
+shadow:[
+ ['Shadow Blaziken','Counter / Aura Sphere',''],
+ ['Shadow Conkeldurr','Force Palm / Dynamic Punch','Bulkier than Blaziken.']],
+legendary:[
+ ['Keldeo (Resolute Forme)','Low Kick / Secret Sword','Mythical — 906 TDO.'],
+ ['Terrakion','Double Kick / Sacred Sword','Rock coverage too.'],
+ ['Urshifu (Rapid Strike Style)','Counter / Dynamic Punch','']],
+regular:[
+ ['Lucario','Force Palm / Aura Sphere',''],
+ ['Blaziken','Counter / Aura Sphere','Machamp (#37) remains the cheapest usable option.']]},
+
+steel:{mega:[
+ ['Mega Lucario','Force Palm / Meteor Mash',''],
+ ['Mega Metagross','Bullet Punch / Meteor Mash','1323 TDO. Mega Skarmory (#9) is the cheap alternative.']],
+shadowLeg:[['Shadow Dialga','Metal Claw / Iron Head','']],
+shadow:[
+ ['Shadow Metagross','Bullet Punch / Meteor Mash','Top non-Legendary Steel on both sites.'],
+ ['Shadow Excadrill','Metal Claw / Iron Head','']],
+legendary:[
+ ['Crowned Sword Zacian','Metal Claw / Behemoth Blade','#1 Steel — 1416 TDO.'],
+ ['Crowned Shield Zamazenta','Metal Claw / Behemoth Bash','1443 TDO — tankiest attacker in the game.'],
+ ['Dusk Mane Necrozma','Metal Claw / Sunsteel Strike','']],
+regular:[
+ ['Metagross','Bullet Punch / Meteor Mash','Still excellent value.'],
+ ['Tinkaton','Fairy Wind / Gigaton Hammer','Fairy coverage on the same build.']]},
+
+ground:{mega:[
+ ['Primal Groudon','Mud Shot / Precipice Blades','#1 on both sites — covers Electric, Poison, Rock and Steel bosses, and adds Fire.'],
+ ['Mega Garchomp','Mud Shot / Earth Power','']],
+shadowLeg:[['Shadow Groudon','Mud Shot / Precipice Blades','']],
+shadow:[
+ ['Shadow Garchomp','Mud Shot / Earth Power',''],
+ ['Shadow Excadrill','Mud-Slap / Scorching Sands','Highest Ground DPS among the cheap options.']],
+legendary:[
+ ['Landorus (Therian Forme)','Mud Shot / Sandsear Storm',''],
+ ['Groudon','Mud Shot / Precipice Blades',''],
+ ['Landorus (Incarnate Forme)','Mud Shot / Earth Power','']],
+regular:[
+ ['Garchomp','Mud Shot / Earth Power',''],
+ ['Excadrill','Mud-Slap / Scorching Sands','Rhyperior (#20) is the bulk option.']]},
+
+rock:{mega:[
+ ['Mega Diancie','Rock Throw / Rock Slide','#1 on both sites.'],
+ ['Mega Tyranitar','Smack Down / Stone Edge','1106 TDO. Mega Aerodactyl (#6) is cheaper.']],
+shadowLeg:[['Shadow Landorus (Incarnate)','Rock Throw / Rock Slide','Off-type filler. Shadow Regirock (#38) is the STAB alternative — neither is worth building over the shadows below.',1]],
+shadow:[
+ ['Shadow Rhyperior','Smack Down / Rock Wrecker','#2 Rock overall — best all-round Rock attacker.'],
+ ['Shadow Rampardos','Smack Down / Rock Slide','Highest Rock DPS in the game, but 420 TDO — dies fast.']],
+legendary:[
+ ['Terrakion','Smack Down / Rock Slide','Fighting coverage.'],
+ ['Nihilego','Poison Jab / Rock Slide','Ultra Beast — 644 TDO.'],
+ ['Stakataka','Rock Throw / Stone Edge','Ultra Beast — 619 TDO.']],
+regular:[
+ ['Rhyperior','Smack Down / Rock Wrecker','The workhorse.'],
+ ['Glimmora','Rock Throw / Meteor Beam','Beats Rampardos on Score.']]},
+
+fairy:{mega:[
+ ['Mega Gardevoir','Charm / Dazzling Gleam','#1 on both sites by a wide margin.'],
+ ['Mega Alakazam','Psycho Cut / Dazzling Gleam','Mega Gallade (#6) is the bulkier option.']],
+shadowLeg:[['Shadow Latias','Charm / Outrage','Only Shadow Legendary with a Fairy fast move, and it has no Fairy charged move at all. Not worth building.',1]],
+shadow:[
+ ['Shadow Gardevoir','Charm / Dazzling Gleam','Best Shadow Fairy on both sites.'],
+ ['Shadow Granbull','Charm / Play Rough','Cheap and genuinely usable.']],
+legendary:[
+ ['Crowned Sword Zacian','Metal Claw / Play Rough','982 TDO.'],
+ ['Enamorus (Incarnate Forme)','Fairy Wind / Dazzling Gleam',''],
+ ['Tapu Lele','Astonish / Nature’s Madness','Tapu Koko and Xerneas are within a point.']],
+regular:[
+ ['Gardevoir','Charm / Dazzling Gleam',''],
+ ['Togekiss','Charm / Dazzling Gleam','680 TDO — the durable option.']]},
+
+flying:{mega:[
+ ['Mega Rayquaza','Air Slash / Dragon Ascent','48.24 DPS, 1693 TDO — the best single attacker listed anywhere here.'],
+ ['Mega Skarmory','Air Slash / Drill Peck+','']],
+shadowLeg:[['Shadow Moltres','Wing Attack / Fly','#3 Flying on both sites.']],
+shadow:[
+ ['Shadow Salamence','Fire Fang / Fly',''],
+ ['Shadow Toucannon','Peck / Beak Blast','Surprisingly high DPS — 35.47.']],
+legendary:[
+ ['Rayquaza','Air Slash / Dragon Ascent','Non-mega, still #3 on Hub.'],
+ ['Enamorus (Incarnate Forme)','Fairy Wind / Fly',''],
+ ['Yveltal','Gust / Oblivion Wing','859 TDO.']],
+regular:[
+ ['Salamence','Fire Fang / Fly',''],
+ ['Toucannon','Peck / Beak Blast','Staraptor (#24) is the budget pick.']]},
+
+poison:{mega:[
+ ['Mega Victreebel','Acid / Acid Spray+','Hub #1 — 33.02 DPS.'],
+ ['Mega Gengar','Lick / Sludge Bomb','Mega Beedrill is a close third.']],
+shadowLeg:[['Shadow Darkrai','Snarl / Sludge Bomb','Off-type fast move, but still #10 overall.']],
+shadow:[
+ ['Shadow Overqwil','Poison Jab / Sludge Bomb','Best non-Legendary Poison on both sites.'],
+ ['Shadow Gengar','Lick / Sludge Bomb','']],
+legendary:[
+ ['Eternatus','Poison Jab / Dynamax Cannon','Pokebattler’s runaway #1 Poison.'],
+ ['Nihilego','Poison Jab / Sludge Bomb','Ultra Beast — 843 TDO.'],
+ ['Naganadel','Poison Jab / Sludge Bomb','Ultra Beast.']],
+regular:[
+ ['Roserade','Poison Jab / Sludge Bomb',''],
+ ['Overqwil','Poison Jab / Sludge Bomb','Revavroom (#18) has the best bulk here.']]},
+
+bug:{mega:[
+ ['Mega Beedrill','Bug Bite / Fell Stinger+','39.01 DPS — Hub #1.'],
+ ['Mega Heracross','Fury Cutter / Megahorn','Pokebattler’s #1 — 812 TDO.']],
+shadowLeg:[['Shadow Heatran','Bug Bite / Magma Storm','The only Shadow Legendary with a Bug move. Do not build this for Bug — use the shadows below.',1]],
+shadow:[
+ ['Shadow Vikavolt','Bug Bite / X-Scissor','Best Bug shadow on both sites.'],
+ ['Shadow Scizor','Fury Cutter / X-Scissor','Steel typing helps it live.']],
+legendary:[
+ ['Kartana','Fury Cutter / X-Scissor','Ultra Beast — Grass coverage too.'],
+ ['Genesect','Fury Cutter / X-Scissor','Mythical — 675 TDO.'],
+ ['Pheromosa','Bug Bite / Bug Buzz','28.24 DPS but only 257 TDO.']],
+regular:[
+ ['Volcarona','Bug Bite / Bug Buzz','Best non-Legendary Bug.'],
+ ['Vikavolt','Bug Bite / X-Scissor','Kleavor and Scizor are within a point.']]},
+
+normal:{mega:[
+ ['Mega Delphox','Scratch / Mystical Fire+',''],
+ ['Mega Mewtwo Y','Confusion / Hyper Beam','']],
+shadowLeg:[['Shadow Regigigas','Zen Headbutt / Crush Grip','#1 Normal attacker on both sites.']],
+shadow:[
+ ['Shadow Gigalith','Lock-On / Meteor Beam','Ranked on its Normal fast move.'],
+ ['Shadow Staraptor','Quick Attack / Fly','']],
+legendary:[
+ ['Regigigas','Zen Headbutt / Crush Grip',''],
+ ['Crowned Sword Zacian','Metal Claw / Giga Impact',''],
+ ['Regieleki','Lock-On / Thunder Cage','']],
+regular:[
+ ['Gigalith','Lock-On / Meteor Beam',''],
+ ['Staraptor','Quick Attack / Fly','']]}
+};
+
+const BANDS = [
+  ['mega','Mega / Primal'],
+  ['shadowLeg','Shadow Legendary'],
+  ['shadow','Shadow · non-Legendary'],
+  ['legendary','Legendary'],
+  ['regular','Non-Legendary · non-Shadow']
+];
+const ORDER = ['fire','water','grass','electric','ice','dragon','psychic','ghost','dark','fighting','steel','ground','rock','fairy','flying','poison','bug','normal'];
+
+/* ---------- state ---------- */
+let sel = 'fire', query = '';
+try{ const s = localStorage.getItem('rcb-type'); if(s && D[s]) sel = s; }catch(e){}
+
+const rail = document.getElementById('rail');
+const view = document.getElementById('view');
+const q = document.getElementById('q');
+
+/* ---------- type rail ---------- */
+ORDER.forEach(k=>{
+  const b = document.createElement('button');
+  b.className='chip'; b.type='button'; b.textContent=T[k].n;
+  b.style.setProperty('--c', T[k].l);
+  b.dataset.k = k;
+  b.setAttribute('aria-pressed', k===sel);
+  b.addEventListener('click',()=>{ sel=k; query=''; q.value=''; try{localStorage.setItem('rcb-type',k)}catch(e){} paint(); });
+  rail.appendChild(b);
+});
+
+function applyAccent(k){
+  document.documentElement.style.setProperty('--type-l', T[k].l);
+  document.documentElement.style.setProperty('--type-d', T[k].d);
+}
+function esc(s){ return String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+function tags(list, dim){
+  if(!list || !list.length) return '<span class="none">nothing</span>';
+  return list.map(t=>`<span class="tag" style="--c:${T[t].l}">${T[t].n}</span>`).join(' ');
+}
+
+function pickRow(p){
+  const warn = p[3] ? ' warn' : '';
+  const flag = p[3] ? '<span class="flag">Not recommended</span>' : '';
+  const note = p[2] ? `<div class="nt">${esc(p[2])}</div>` : '';
+  return `<div class="pick${warn}"><div class="rail-c"></div><div class="body">
+    <div class="top"><span class="nm">${esc(p[0])}</span><span class="mv">${esc(p[1])}</span>${flag}</div>
+    ${note}</div></div>`;
+}
+
+function paintType(){
+  const k = sel, t = T[k], d = D[k];
+  applyAccent(k);
+  const isNormal = k === 'normal';
+
+  let html = `<section class="head">
+    <h2>${t.n}</h2>
+    <div class="matchups">
+      <div class="mrow"><span class="mlabel">Strong vs</span>${tags(t.se)}</div>
+      <div class="mrow dim"><span class="mlabel">Resisted by</span>${tags((t.res||[]).concat(t.imm||[]))}</div>
+    </div>
+  </section>`;
+
+  if(isNormal){
+    html += `<div class="note-block"><h3>Normal is not a raid-counter type</h3>
+      <ul><li>Normal moves are never super-effective against anything, so you will not pick these for a raid.
+      Listed for completeness — the numbers run well below every other type.</li></ul></div>`;
+  }
+
+  BANDS.forEach(([key,label])=>{
+    const rows = d[key]; if(!rows || !rows.length) return;
+    html += `<section class="band">
+      <div class="band-h"><span>${label}</span><span class="n">${rows.length}</span><span class="line"></span></div>
+      <div class="picks">${rows.map(pickRow).join('')}</div>
+    </section>`;
+  });
+  view.innerHTML = html;
+}
+
+function paintSearch(){
+  const needle = query.toLowerCase();
+  const hits = [];
+  ORDER.forEach(k=>{
+    BANDS.forEach(([key,label])=>{
+      (D[k][key]||[]).forEach(p=>{
+        if(p[0].toLowerCase().includes(needle)) hits.push({k,label,p});
+      });
+    });
+  });
+  applyAccent(hits.length ? hits[0].k : sel);
+
+  if(!hits.length){
+    view.innerHTML = `<div class="empty">No attacker matching “${esc(query)}” in the 180 picks.</div>`;
+    return;
+  }
+  let html = `<section class="head" style="padding-block:22px 12px">
+    <h2 style="font-size:clamp(24px,6vw,34px);color:var(--ink)">${hits.length} match${hits.length>1?'es':''}</h2>
+    <div class="mrow" style="margin-top:10px;color:var(--muted);font-size:13px">for “${esc(query)}” across all 18 attack types</div>
+  </section><div class="picks">`;
+  hits.forEach(h=>{
+    const warn = h.p[3] ? ' warn' : '';
+    const note = h.p[2] ? `<div class="nt">${esc(h.p[2])}</div>` : '';
+    html += `<div class="pick${warn}"><div class="rail-c" style="background:${T[h.k].l}"></div><div class="body">
+      <div class="top">
+        <span class="res-type" style="--c:${T[h.k].l};background:${T[h.k].l};color:#fff">${T[h.k].n}</span>
+        <span class="nm">${esc(h.p[0])}</span>
+        <span class="mv">${esc(h.p[1])}</span>
+      </div>
+      <div class="res-slot" style="margin-top:6px">${h.label}</div>
+      ${note}</div></div>`;
+  });
+  html += `</div>`;
+  view.innerHTML = html;
+}
+
+function paint(){
+  [...rail.children].forEach(c=>c.setAttribute('aria-pressed', c.dataset.k===sel && !query));
+  if(query.trim().length >= 2) paintSearch(); else paintType();
+}
+
+q.addEventListener('input', e=>{ query = e.target.value; paint(); });
+paint();
+const active = rail.querySelector('[aria-pressed="true"]');
+if(active) active.scrollIntoView({block:'nearest',inline:'center'});
+</script>
