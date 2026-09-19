@@ -76,6 +76,47 @@ h1,h2,h3{font-family:"Bricolage Grotesque","Public Sans",ui-sans-serif,system-ui
 .search input::placeholder{color:var(--muted)}
 .search svg{position:absolute;left:11px;top:9px;width:15px;height:15px;stroke:var(--muted);fill:none;stroke-width:2}
 
+/* ---- mode switch ---- */
+.modes{display:inline-flex;gap:2px;padding:2px;border:1px solid var(--line);border-radius:99px;background:var(--surface-2);margin-block:0 10px}
+.mode{
+  cursor:pointer;border:0;background:transparent;color:var(--muted);border-radius:99px;padding:5px 14px 6px;
+  font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:11px;font-weight:500;
+  letter-spacing:.09em;text-transform:uppercase;white-space:nowrap;transition:background .14s,color .14s;
+}
+.mode:hover{color:var(--ink-2)}
+.mode[aria-pressed="true"]{background:var(--surface);color:var(--ink);font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.mode:focus-visible{outline:2px solid var(--type);outline-offset:2px}
+
+/* ---- boss mode rows ---- */
+.eyebrow{
+  font-family:"IBM Plex Mono",monospace;font-size:10.5px;font-weight:600;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:6px;
+}
+.blist{display:flex;flex-direction:column;gap:1px;background:var(--line-2);border:1px solid var(--line);border-radius:11px;overflow:hidden;box-shadow:var(--shadow);margin-bottom:22px}
+.brow{display:grid;grid-template-columns:44px 1fr;background:var(--surface);align-items:start}
+.brow .rk{
+  font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;font-size:15px;font-weight:600;
+  color:var(--type);text-align:right;padding:14px 11px 0 0;line-height:1.25;
+}
+.brow:nth-child(n+4) .rk{color:var(--muted)}
+.brow .bd{padding:13px 15px 14px 0}
+.brow .top{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap}
+.brow .nm{font-family:"Bricolage Grotesque",sans-serif;font-size:18px;font-weight:700;letter-spacing:-.015em;line-height:1.2}
+.brow .mv{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--ink-2);background:var(--surface-2);border:1px solid var(--line-2);border-radius:5px;padding:2px 7px 3px}
+.meta{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:7px}
+.via{
+  font-family:"IBM Plex Mono",monospace;font-size:9.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+  padding:2px 7px 3px;border-radius:4px;background:var(--a);color:#fff;
+}
+.cat{font-size:12px;color:var(--muted)}
+.dual{
+  font-family:"IBM Plex Mono",monospace;font-size:9.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+  padding:1px 6px 2px;border-radius:4px;color:var(--type);
+  border:1px solid color-mix(in srgb,var(--type) 45%,transparent);
+  background:color-mix(in srgb,var(--type) var(--type-soft),var(--surface));
+}
+.sc{margin-left:auto;font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;font-size:11.5px;color:var(--muted)}
+
 /* ---- type header ---- */
 .head{padding-block:26px 18px}
 .head h2{font-size:clamp(34px,9vw,52px);font-weight:800;letter-spacing:-.035em;line-height:.95;color:var(--type)}
@@ -163,9 +204,13 @@ h1,h2,h3{font-family:"Bricolage Grotesque","Public Sans",ui-sans-serif,system-ui
   <div class="wrap">
     <div class="masthead">
       <h1>Raid Counter Board</h1>
-      <span class="sub">Best attackers per type · <b>Pokémon GO Hub</b> × <b>Pokebattler</b> · Sep 2026</span>
+      <span class="sub">By attack type or by boss type · <b>Pokémon GO Hub</b> × <b>Pokebattler</b> · Sep 2026</span>
     </div>
-    <div class="rail" id="rail" role="tablist" aria-label="Attack type"></div>
+    <div class="modes" role="group" aria-label="Lookup mode">
+      <button class="mode" type="button" data-m="atk" aria-pressed="true">Attack type</button>
+      <button class="mode" type="button" data-m="boss" aria-pressed="false">Boss type</button>
+    </div>
+    <div class="rail" id="rail" role="tablist" aria-label="Type"></div>
   </div>
 </div>
 
@@ -488,6 +533,209 @@ regular:[
  ['Staraptor','Quick Attack / Fly','']]}
 };
 
+const BOSS = {
+ normal:{w:["fighting"],p:[
+  ["Mega Mewtwo X","Counter","Dynamic Punch+",43.35,"mega","fighting",1],
+  ["Mega Lucario","Force Palm","Aura Sphere",36.79,"mega","fighting",1],
+  ["Keldeo (Resolute Forme)","Low Kick","Secret Sword",31.89,"legend","fighting",1],
+  ["Shadow Blaziken","Counter","Aura Sphere",29.35,"shadow","fighting",1],
+  ["Shadow Conkeldurr","Force Palm","Dynamic Punch",28.19,"shadow","fighting",1],
+  ["Lucario","Force Palm","Aura Sphere",27.09,"regular","fighting",1],
+  ["Terrakion","Double Kick","Sacred Sword",26.89,"legend","fighting",1],
+  ["Keldeo (Ordinary Forme)","Low Kick","Sacred Sword",25.52,"legend","fighting",1],
+  ["Blaziken","Counter","Aura Sphere",25.45,"regular","fighting",1],
+  ["Shadow Mewtwo","Counter","Focus Blast",25.43,"shadowleg","fighting",1]]},
+ fire:{w:["water", "ground", "rock"],p:[
+  ["Mega Greninja","Water Shuriken","Surf+",34.20,"mega","water",1],
+  ["Primal Kyogre","Waterfall","Origin Pulse",33.07,"mega","water",1],
+  ["Shadow Rhyperior","Smack Down","Rock Wrecker",30.23,"shadow","rock",1],
+  ["Shadow Rampardos","Smack Down","Rock Slide",28.91,"shadow","rock",1],
+  ["Shadow Groudon","Mud Shot","Precipice Blades",28.88,"shadowleg","ground",1],
+  ["Landorus (Therian Forme)","Mud Shot","Sandsear Storm",26.96,"legend","ground",1],
+  ["Rhyperior","Smack Down","Rock Wrecker",25.58,"regular","rock",1],
+  ["Glimmora","Rock Throw","Meteor Beam",25.49,"regular","rock",1],
+  ["Rampardos","Smack Down","Rock Slide",25.40,"regular","rock",1],
+  ["Groudon","Mud Shot","Precipice Blades",24.67,"legend","ground",1]]},
+ water:{w:["electric", "grass"],p:[
+  ["Mega Raichu Y","Thunder Shock","Zap Cannon+",34.25,"mega","electric",1],
+  ["Mega Raichu X","Thunder Shock","Volt Tackle+",31.46,"mega","electric",1],
+  ["Shadow Thundurus (Therian Forme)","Volt Switch","Wildbolt Storm",29.75,"shadowleg","electric",1],
+  ["Zeraora","Volt Switch","Plasma Fists",27.41,"legend","electric",1],
+  ["Regieleki","Lock-On","Thunder Cage",27.39,"legend","electric",0],
+  ["Xurkitree","Thunder Shock","Discharge",26.32,"legend","electric",1],
+  ["Shadow Electivire","Thunder Shock","Wild Charge",26.15,"shadow","electric",1],
+  ["Shadow Magnezone","Volt Switch","Wild Charge",25.37,"shadow","electric",1],
+  ["Rillaboom","Razor Leaf","Frenzy Plant",23.11,"regular","grass",1],
+  ["Electivire","Thunder Shock","Wild Charge",22.60,"regular","electric",1]]},
+ electric:{w:["ground"],p:[
+  ["Primal Groudon","Mud Shot","Precipice Blades",33.06,"mega","ground",1],
+  ["Mega Garchomp","Mud Shot","Earth Power",30.13,"mega","ground",1],
+  ["Shadow Groudon","Mud Shot","Precipice Blades",28.88,"shadowleg","ground",1],
+  ["Shadow Garchomp","Mud Shot","Earth Power",27.36,"shadow","ground",1],
+  ["Landorus (Therian Forme)","Mud Shot","Sandsear Storm",26.96,"legend","ground",1],
+  ["Shadow Excadrill","Mud-Slap","Scorching Sands",26.51,"shadow","ground",1],
+  ["Groudon","Mud Shot","Precipice Blades",24.67,"legend","ground",1],
+  ["Garchomp","Mud Shot","Earth Power",23.10,"regular","ground",1],
+  ["Excadrill","Mud-Slap","Scorching Sands",22.72,"regular","ground",1],
+  ["Landorus (Incarnate Forme)","Mud Shot","Earth Power",22.43,"legend","ground",1]]},
+ grass:{w:["fire", "ice", "poison", "flying", "bug"],p:[
+  ["Mega Rayquaza","Air Slash","Dragon Ascent",45.92,"mega","flying",1],
+  ["Mega Delphox","Fire Spin","Mystical Fire+",37.51,"mega","fire",1],
+  ["White Kyurem","Ice Fang","Ice Burn",34.89,"legend","ice",1],
+  ["Rayquaza","Air Slash","Dragon Ascent",33.80,"legend","flying",1],
+  ["Shadow Moltres","Wing Attack","Fly",33.09,"shadowleg","flying",1],
+  ["Black Kyurem","Dragon Tail","Freeze Shock",32.28,"legend","ice",0],
+  ["Shadow Salamence","Fire Fang","Fly",31.75,"shadow","flying",1],
+  ["Shadow Toucannon","Peck","Beak Blast",30.81,"shadow","flying",1],
+  ["Salamence","Fire Fang","Fly",26.87,"regular","flying",1],
+  ["Toucannon","Peck","Beak Blast",26.71,"regular","flying",1]]},
+ ice:{w:["fire", "fighting", "rock", "steel"],p:[
+  ["Mega Mewtwo X","Counter","Dynamic Punch+",43.35,"mega","fighting",1],
+  ["Mega Delphox","Fire Spin","Mystical Fire+",37.51,"mega","fire",1],
+  ["Crowned Sword Zacian","Metal Claw","Behemoth Blade",36.19,"legend","steel",1],
+  ["Crowned Shield Zamazenta","Metal Claw","Behemoth Bash",35.00,"legend","steel",1],
+  ["Dusk Mane Necrozma","Metal Claw","Sunsteel Strike",34.53,"legend","steel",1],
+  ["Shadow Reshiram","Fire Fang","Fusion Flare",32.13,"shadowleg","fire",1],
+  ["Shadow Rhyperior","Smack Down","Rock Wrecker",30.23,"shadow","rock",1],
+  ["Shadow Metagross","Bullet Punch","Meteor Mash",29.84,"shadow","steel",1],
+  ["Lucario","Force Palm","Aura Sphere",27.09,"regular","fighting",1],
+  ["Rhyperior","Smack Down","Rock Wrecker",25.58,"regular","rock",1]]},
+ fighting:{w:["flying", "psychic", "fairy"],p:[
+  ["Mega Mewtwo Y","Psycho Cut","Future Sight+",48.86,"mega","psychic",1],
+  ["Mega Rayquaza","Air Slash","Dragon Ascent",45.92,"mega","flying",1],
+  ["Shadow Mewtwo","Psycho Cut","Psystrike",34.85,"shadowleg","psychic",1],
+  ["Rayquaza","Air Slash","Dragon Ascent",33.80,"legend","flying",1],
+  ["Shadow Salamence","Fire Fang","Fly",31.75,"shadow","flying",0],
+  ["Shadow Toucannon","Peck","Beak Blast",30.81,"shadow","flying",1],
+  ["Mewtwo","Psycho Cut","Psystrike",29.70,"legend","psychic",1],
+  ["Enamorus (Incarnate Forme)","Fairy Wind","Fly",29.44,"legend","flying",1],
+  ["Salamence","Fire Fang","Fly",26.87,"regular","flying",0],
+  ["Toucannon","Peck","Beak Blast",26.71,"regular","flying",1]]},
+ poison:{w:["ground", "psychic"],p:[
+  ["Mega Mewtwo Y","Psycho Cut","Future Sight+",48.86,"mega","psychic",1],
+  ["Mega Mewtwo X","Confusion","Psystrike",40.62,"mega","psychic",1],
+  ["Shadow Mewtwo","Psycho Cut","Psystrike",34.85,"shadowleg","psychic",1],
+  ["Mewtwo","Psycho Cut","Psystrike",29.70,"legend","psychic",1],
+  ["Deoxys (Normal Forme)","Zen Headbutt","Psycho Boost",29.25,"legend","psychic",1],
+  ["Shadow Garchomp","Mud Shot","Earth Power",27.36,"shadow","ground",1],
+  ["Shadow Metagross","Zen Headbutt","Psychic",27.19,"shadow","psychic",1],
+  ["Landorus (Therian Forme)","Mud Shot","Sandsear Storm",26.96,"legend","ground",1],
+  ["Garchomp","Mud Shot","Earth Power",23.10,"regular","ground",1],
+  ["Metagross","Zen Headbutt","Psychic",22.99,"regular","psychic",1]]},
+ ground:{w:["water", "grass", "ice"],p:[
+  ["White Kyurem","Ice Fang","Ice Burn",34.89,"legend","ice",1],
+  ["Mega Greninja","Water Shuriken","Surf+",34.20,"mega","water",1],
+  ["Primal Kyogre","Waterfall","Origin Pulse",33.07,"mega","water",1],
+  ["Black Kyurem","Dragon Tail","Freeze Shock",32.28,"legend","ice",0],
+  ["Shadow Kyogre","Waterfall","Origin Pulse",28.74,"shadowleg","water",1],
+  ["Shadow Mamoswine","Powder Snow","Avalanche",27.44,"shadow","ice",1],
+  ["Kartana","Razor Leaf","Leaf Blade",25.90,"legend","grass",1],
+  ["Shadow Greninja","Water Shuriken","Hydro Cannon",25.11,"shadow","water",1],
+  ["Baxcalibur","Ice Fang","Avalanche",24.63,"regular","ice",1],
+  ["Galarian Darmanitan","Ice Fang","Avalanche",23.86,"regular","ice",1]]},
+ flying:{w:["electric", "ice", "rock"],p:[
+  ["White Kyurem","Ice Fang","Ice Burn",34.89,"legend","ice",1],
+  ["Mega Raichu Y","Thunder Shock","Zap Cannon+",34.25,"mega","electric",1],
+  ["Black Kyurem","Dragon Tail","Freeze Shock",32.28,"legend","ice",0],
+  ["Mega Raichu X","Thunder Shock","Volt Tackle+",31.46,"mega","electric",1],
+  ["Shadow Rhyperior","Smack Down","Rock Wrecker",30.23,"shadow","rock",1],
+  ["Shadow Thundurus (Therian Forme)","Volt Switch","Wildbolt Storm",29.75,"shadowleg","electric",1],
+  ["Shadow Rampardos","Smack Down","Rock Slide",28.91,"shadow","rock",1],
+  ["Zeraora","Volt Switch","Plasma Fists",27.41,"legend","electric",1],
+  ["Rhyperior","Smack Down","Rock Wrecker",25.58,"regular","rock",1],
+  ["Glimmora","Rock Throw","Meteor Beam",25.49,"regular","rock",1]]},
+ psychic:{w:["bug", "ghost", "dark"],p:[
+  ["Mega Houndoom","Snarl","Dark Pulse+",35.33,"mega","dark",1],
+  ["Mega Beedrill","Bug Bite","Fell Stinger+",33.71,"mega","bug",1],
+  ["Dawn Wings Necrozma","Psycho Cut","Moongeist Beam",32.66,"legend","ghost",0],
+  ["Shadow Darkrai","Snarl","Foul Play",30.99,"shadowleg","dark",1],
+  ["Shadow Hydreigon","Bite","Brutal Swing",29.41,"shadow","dark",1],
+  ["Shadow Tyranitar","Bite","Brutal Swing",29.21,"shadow","dark",1],
+  ["Darkrai","Snarl","Foul Play",26.36,"legend","dark",1],
+  ["Lunala","Shadow Claw","Shadow Ball",25.18,"legend","ghost",1],
+  ["Hydreigon","Bite","Brutal Swing",24.84,"regular","dark",1],
+  ["Tyranitar","Bite","Brutal Swing",24.61,"regular","dark",1]]},
+ bug:{w:["fire", "flying", "rock"],p:[
+  ["Mega Rayquaza","Air Slash","Dragon Ascent",45.92,"mega","flying",1],
+  ["Mega Delphox","Fire Spin","Mystical Fire+",37.51,"mega","fire",1],
+  ["Rayquaza","Air Slash","Dragon Ascent",33.80,"legend","flying",1],
+  ["Shadow Moltres","Wing Attack","Fly",33.09,"shadowleg","flying",1],
+  ["Shadow Salamence","Fire Fang","Fly",31.75,"shadow","flying",1],
+  ["Blacephalon","Incinerate","Mind Blown",31.74,"legend","fire",1],
+  ["Shadow Toucannon","Peck","Beak Blast",30.81,"shadow","flying",1],
+  ["Enamorus (Incarnate Forme)","Fairy Wind","Fly",29.44,"legend","flying",0],
+  ["Salamence","Fire Fang","Fly",26.87,"regular","flying",1],
+  ["Toucannon","Peck","Beak Blast",26.71,"regular","flying",1]]},
+ rock:{w:["water", "grass", "fighting", "ground", "steel"],p:[
+  ["Mega Mewtwo X","Counter","Dynamic Punch+",43.35,"mega","fighting",1],
+  ["Mega Lucario","Force Palm","Aura Sphere",36.79,"mega","fighting",1],
+  ["Crowned Sword Zacian","Metal Claw","Behemoth Blade",36.19,"legend","steel",1],
+  ["Crowned Shield Zamazenta","Metal Claw","Behemoth Bash",35.00,"legend","steel",1],
+  ["Dusk Mane Necrozma","Metal Claw","Sunsteel Strike",34.53,"legend","steel",1],
+  ["Shadow Metagross","Bullet Punch","Meteor Mash",29.84,"shadow","steel",1],
+  ["Shadow Blaziken","Counter","Aura Sphere",29.35,"shadow","fighting",1],
+  ["Shadow Groudon","Mud Shot","Precipice Blades",28.88,"shadowleg","ground",1],
+  ["Lucario","Force Palm","Aura Sphere",27.09,"regular","fighting",1],
+  ["Blaziken","Counter","Aura Sphere",25.45,"regular","fighting",1]]},
+ ghost:{w:["ghost", "dark"],p:[
+  ["Mega Houndoom","Snarl","Dark Pulse+",35.33,"mega","dark",1],
+  ["Dawn Wings Necrozma","Psycho Cut","Moongeist Beam",32.66,"legend","ghost",0],
+  ["Mega Gengar","Lick","Shadow Ball",31.54,"mega","ghost",1],
+  ["Shadow Darkrai","Snarl","Foul Play",30.99,"shadowleg","dark",1],
+  ["Shadow Hydreigon","Bite","Brutal Swing",29.41,"shadow","dark",1],
+  ["Shadow Tyranitar","Bite","Brutal Swing",29.21,"shadow","dark",1],
+  ["Darkrai","Snarl","Foul Play",26.36,"legend","dark",1],
+  ["Lunala","Shadow Claw","Shadow Ball",25.18,"legend","ghost",1],
+  ["Hydreigon","Bite","Brutal Swing",24.84,"regular","dark",1],
+  ["Tyranitar","Bite","Brutal Swing",24.61,"regular","dark",1]]},
+ dragon:{w:["ice", "dragon", "fairy"],p:[
+  ["Mega Rayquaza","Dragon Tail","Breaking Swipe",36.18,"mega","dragon",1],
+  ["Eternatus","Dragon Tail","Dynamax Cannon",36.13,"legend","dragon",1],
+  ["White Kyurem","Ice Fang","Ice Burn",34.89,"legend","ice",1],
+  ["Mega Dragonite","Dragon Tail","Outrage+",34.39,"mega","dragon",1],
+  ["Black Kyurem","Dragon Tail","Freeze Shock",32.28,"legend","ice",1],
+  ["Shadow Garchomp","Dragon Tail","Breaking Swipe",29.41,"shadow","dragon",1],
+  ["Shadow Haxorus","Dragon Tail","Breaking Swipe",28.99,"shadow","dragon",1],
+  ["Shadow Palkia","Dragon Tail","Draco Meteor",28.32,"shadowleg","dragon",1],
+  ["Baxcalibur","Ice Fang","Glaive Rush",27.40,"regular","dragon",1],
+  ["Haxorus","Dragon Tail","Breaking Swipe",25.28,"regular","dragon",1]]},
+ dark:{w:["fighting", "bug", "fairy"],p:[
+  ["Mega Mewtwo X","Counter","Dynamic Punch+",43.35,"mega","fighting",1],
+  ["Mega Lucario","Force Palm","Aura Sphere",36.79,"mega","fighting",1],
+  ["Keldeo (Resolute Forme)","Low Kick","Secret Sword",31.89,"legend","fighting",1],
+  ["Shadow Blaziken","Counter","Aura Sphere",29.35,"shadow","fighting",1],
+  ["Shadow Conkeldurr","Force Palm","Dynamic Punch",28.19,"shadow","fighting",1],
+  ["Lucario","Force Palm","Aura Sphere",27.09,"regular","fighting",1],
+  ["Crowned Sword Zacian","Metal Claw","Play Rough",27.07,"legend","fairy",0],
+  ["Terrakion","Double Kick","Sacred Sword",26.89,"legend","fighting",1],
+  ["Blaziken","Counter","Aura Sphere",25.45,"regular","fighting",1],
+  ["Shadow Mewtwo","Counter","Focus Blast",25.43,"shadowleg","fighting",1]]},
+ steel:{w:["fire", "fighting", "ground"],p:[
+  ["Mega Mewtwo X","Counter","Dynamic Punch+",43.35,"mega","fighting",1],
+  ["Mega Delphox","Fire Spin","Mystical Fire+",37.51,"mega","fire",1],
+  ["Shadow Reshiram","Fire Fang","Fusion Flare",32.13,"shadowleg","fire",1],
+  ["Keldeo (Resolute Forme)","Low Kick","Secret Sword",31.89,"legend","fighting",1],
+  ["Blacephalon","Incinerate","Mind Blown",31.74,"legend","fire",1],
+  ["Shadow Blaziken","Counter","Aura Sphere",29.35,"shadow","fighting",1],
+  ["Shadow Conkeldurr","Force Palm","Dynamic Punch",28.19,"shadow","fighting",1],
+  ["Reshiram","Fire Fang","Fusion Flare",27.28,"legend","fire",1],
+  ["Lucario","Force Palm","Aura Sphere",27.09,"regular","fighting",1],
+  ["Blaziken","Counter","Aura Sphere",25.45,"regular","fighting",1]]},
+ fairy:{w:["poison", "steel"],p:[
+  ["Crowned Sword Zacian","Metal Claw","Behemoth Blade",36.19,"legend","steel",1],
+  ["Crowned Shield Zamazenta","Metal Claw","Behemoth Bash",35.00,"legend","steel",1],
+  ["Dusk Mane Necrozma","Metal Claw","Sunsteel Strike",34.53,"legend","steel",1],
+  ["Mega Victreebel","Acid","Acid Spray+",30.53,"mega","poison",1],
+  ["Mega Lucario","Force Palm","Meteor Mash",30.43,"mega","steel",0],
+  ["Shadow Metagross","Bullet Punch","Meteor Mash",29.84,"shadow","steel",1],
+  ["Shadow Dialga","Metal Claw","Iron Head",26.21,"shadowleg","steel",1],
+  ["Metagross","Bullet Punch","Meteor Mash",25.16,"regular","steel",1],
+  ["Shadow Overqwil","Poison Jab","Sludge Bomb",25.11,"shadow","poison",1],
+  ["Tinkaton","Fairy Wind","Gigaton Hammer",23.11,"regular","steel",0]]},
+};
+
+const CATN = {mega:'Mega / Primal',shadowleg:'Shadow Legendary',shadow:'Shadow',legend:'Legendary',regular:'Non-Legendary'};
+
 const BANDS = [
   ['mega','Mega / Primal'],
   ['shadowLeg','Shadow Legendary'],
@@ -498,12 +746,22 @@ const BANDS = [
 const ORDER = ['fire','water','grass','electric','ice','dragon','psychic','ghost','dark','fighting','steel','ground','rock','fairy','flying','poison','bug','normal'];
 
 /* ---------- state ---------- */
-let sel = 'fire', query = '';
-try{ const s = localStorage.getItem('rcb-type'); if(s && D[s]) sel = s; }catch(e){}
+let sel = 'fire', query = '', mode = 'atk';
+try{
+  const s = localStorage.getItem('rcb-type'); if(s && D[s]) sel = s;
+  const m = localStorage.getItem('rcb-mode'); if(m === 'boss' || m === 'atk') mode = m;
+}catch(e){}
 
 const rail = document.getElementById('rail');
 const view = document.getElementById('view');
 const q = document.getElementById('q');
+const modeBtns = [...document.querySelectorAll('.mode')];
+
+modeBtns.forEach(b=>b.addEventListener('click',()=>{
+  mode = b.dataset.m;
+  try{ localStorage.setItem('rcb-mode', mode); }catch(e){}
+  paint();
+}));
 
 /* ---------- type rail ---------- */
 ORDER.forEach(k=>{
@@ -601,9 +859,84 @@ function paintSearch(){
   view.innerHTML = html;
 }
 
+function bossRow(e, i){
+  const [nm, fast, chg, score, cat, atk, dual] = e;
+  return `<div class="brow">
+    <div class="rk">${i}</div>
+    <div class="bd">
+      <div class="top"><span class="nm">${esc(nm)}</span><span class="mv">${esc(fast)} / ${esc(chg)}</span></div>
+      <div class="meta">
+        <span class="via" style="--a:${T[atk].l}">${T[atk].n}</span>
+        <span class="cat">${CATN[cat]}</span>
+        ${dual ? '<span class="dual" title="Fast move is also super effective">\u26a1 Dual</span>' : ''}
+        <span class="sc">${score.toFixed(2)}</span>
+      </div>
+    </div></div>`;
+}
+
+function paintBoss(){
+  const k = sel, t = T[k], b = BOSS[k];
+  applyAccent(k);
+  let html = `<section class="head">
+    <div class="eyebrow">Raid boss type</div>
+    <h2>${t.n}</h2>
+    <div class="matchups">
+      <div class="mrow"><span class="mlabel">Weak to</span>${tags(b.w)}</div>
+    </div>
+  </section>
+  <div class="eyebrow" style="margin-bottom:9px">Top 10 counters \u00b7 capped roster</div>
+  <div class="blist">${b.p.map((e,i)=>bossRow(e,i+1)).join('')}</div>
+  <div class="note-block">
+    <h3>How this Top 10 is built</h3>
+    <ul>
+      <li>Every attacker from each of ${t.n}\u2019s weakness types is pooled and ranked by <b>Hub Score</b>. All weaknesses are the same 1.6\u00d7 multiplier, so the scores compare directly.</li>
+      <li>Capped at <b>2 Mega/Primal</b>, <b>1 Shadow Legendary</b>, <b>2 Shadow</b>, <b>3 Legendary</b> \u2014 the rest are non-Legendary. The caps bind, so a stronger Mega or Legendary below the line was cut because its category was full.</li>
+      <li><b>\u26a1 Dual</b> means the fast move is <i>also</i> super effective, so the whole moveset is boosted \u2014 not just the charged move.</li>
+      <li>Single-type bosses only. A dual-typed boss can double a weakness or cancel it, and incoming damage is not modelled \u2014 check Pokebattler for a specific boss.</li>
+    </ul>
+  </div>`;
+  view.innerHTML = html;
+}
+
+function paintSearchBoss(){
+  const needle = query.toLowerCase();
+  const hits = [];
+  ORDER.forEach(k=>{
+    (BOSS[k].p||[]).forEach((e,i)=>{ if(e[0].toLowerCase().includes(needle)) hits.push({k, e, rank:i+1}); });
+  });
+  applyAccent(hits.length ? hits[0].k : sel);
+  if(!hits.length){
+    view.innerHTML = `<div class="empty">No counter matching \u201c${esc(query)}\u201d in the 18 boss-type lists.</div>`;
+    return;
+  }
+  let html = `<section class="head" style="padding-block:22px 12px">
+    <h2 style="font-size:clamp(24px,6vw,34px);color:var(--ink)">Counters ${hits.length} boss type${hits.length>1?'s':''}</h2>
+    <div class="mrow" style="margin-top:10px;color:var(--muted);font-size:13px">\u201c${esc(query)}\u201d ranked against each</div>
+  </section><div class="blist">`;
+  hits.sort((a,b)=>a.rank-b.rank);
+  hits.forEach(h=>{
+    const [nm, fast, chg, score, cat, atk, dual] = h.e;
+    html += `<div class="brow">
+      <div class="rk" style="color:${T[h.k].l}">#${h.rank}</div>
+      <div class="bd">
+        <div class="top"><span class="via" style="--a:${T[h.k].l}">vs ${T[h.k].n}</span><span class="nm">${esc(nm)}</span><span class="mv">${esc(fast)} / ${esc(chg)}</span></div>
+        <div class="meta"><span class="cat">${CATN[cat]} \u00b7 ${T[atk].n} damage</span>
+        ${dual ? '<span class="dual">\u26a1 Dual</span>' : ''}
+        <span class="sc">${score.toFixed(2)}</span></div>
+      </div></div>`;
+  });
+  view.innerHTML = html + `</div>`;
+}
+
 function paint(){
+  modeBtns.forEach(b=>b.setAttribute('aria-pressed', b.dataset.m===mode));
   [...rail.children].forEach(c=>c.setAttribute('aria-pressed', c.dataset.k===sel && !query));
-  if(query.trim().length >= 2) paintSearch(); else paintType();
+  q.placeholder = mode === 'boss'
+    ? 'Search a counter \u2014 which bosses does it answer?'
+    : 'Search a Pok\u00e9mon across all 18 types \u2014 e.g. Metagross, Rhyperior';
+  const searching = query.trim().length >= 2;
+  if(mode === 'boss') searching ? paintSearchBoss() : paintBoss();
+  else searching ? paintSearch() : paintType();
 }
 
 q.addEventListener('input', e=>{ query = e.target.value; paint(); });
