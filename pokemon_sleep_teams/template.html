@@ -1,0 +1,281 @@
+<title>Pokémon Sleep Pot Planner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;700;800&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700&display=swap">
+<style>
+:root {
+  --ground: #eef0f8;
+  --surface: #ffffff;
+  --surface-2: #f5f6fb;
+  --ink: #1b2140;
+  --ink-2: #545b7c;
+  --ink-3: #8a90ad;
+  --line: #dcdff0;
+  --accent: #3b4fc4;
+  --accent-soft: #e2e6fb;
+  --curry: #b8651f;
+  --curry-soft: #fbeadb;
+  --salad: #3f8534;
+  --salad-soft: #e2f1dc;
+  --dessert: #b04a84;
+  --dessert-soft: #f8e1ee;
+  --good: #2f7f5b;
+  --warn: #a86a10;
+  --display: "M PLUS Rounded 1c", "Nunito Sans", ui-rounded, system-ui, sans-serif;
+  --body: "Nunito Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --ground: #10132a; --surface: #181c38; --surface-2: #1f2444; --ink: #e8eaf8; --ink-2: #a9aed0; --ink-3: #767ca3;
+    --line: #2c3259; --accent: #93a2ff; --accent-soft: #262d5c;
+    --curry: #f0a262; --curry-soft: #3a2a1f; --salad: #8fd07f; --salad-soft: #1f3322; --dessert: #f08fc3; --dessert-soft: #3a2033;
+    --good: #6fd3a3; --warn: #f0c060;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --ground: #10132a; --surface: #181c38; --surface-2: #1f2444; --ink: #e8eaf8; --ink-2: #a9aed0; --ink-3: #767ca3;
+  --line: #2c3259; --accent: #93a2ff; --accent-soft: #262d5c;
+  --curry: #f0a262; --curry-soft: #3a2a1f; --salad: #8fd07f; --salad-soft: #1f3322; --dessert: #f08fc3; --dessert-soft: #3a2033;
+  --good: #6fd3a3; --warn: #f0c060;
+}
+* { box-sizing: border-box; }
+body { background: var(--ground); color: var(--ink); font: 15px/1.5 var(--body); }
+.wrap { max-width: 1040px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 64px; }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(26px, 4vw, 34px); font-weight: 800; letter-spacing: -0.01em; }
+.lede { color: var(--ink-2); max-width: 64ch; margin: 6px 0 0; }
+.eyebrow { font: 700 11px/1 var(--body); text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-3); }
+a { color: var(--accent); }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.controls { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: end; margin-top: 22px; }
+.field { display: grid; gap: 6px; }
+.seg { display: inline-flex; background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 3px; }
+.seg button { border: 0; background: none; padding: 6px 14px; border-radius: 999px; cursor: pointer; font-weight: 700; color: var(--ink-2); }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--surface); }
+input[type="search"] { font: inherit; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; width: min(260px, 100%); }
+.field.grow { flex: 1 1 200px; }
+.field.grow input { width: 100%; }
+
+.tabs { display: flex; gap: 4px; margin-top: 26px; border-bottom: 1px solid var(--line); overflow-x: auto; }
+.tabs button { border: 0; background: none; padding: 10px 14px; cursor: pointer; font: 700 15px/1.2 var(--display); color: var(--ink-2); border-bottom: 3px solid transparent; margin-bottom: -1px; white-space: nowrap; }
+.tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); }
+
+.summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-top: 18px; }
+.stat { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; }
+.stat b { font: 800 26px/1.1 var(--display); font-variant-numeric: tabular-nums; display: block; }
+.stat span { color: var(--ink-2); font-size: 13px; }
+
+.list { margin-top: 18px; display: grid; gap: 8px; }
+.recipe { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.recipe > summary { list-style: none; cursor: pointer; display: grid; grid-template-columns: 1fr auto; gap: 6px 16px; padding: 12px 16px; align-items: center; }
+.recipe > summary::-webkit-details-marker { display: none; }
+.recipe[open] > summary { border-bottom: 1px solid var(--line); background: var(--surface-2); }
+.rname { font: 700 16px/1.3 var(--display); display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; }
+.rmeta { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 4px 6px; }
+.type { font: 700 11px/1 var(--body); text-transform: uppercase; letter-spacing: 0.08em; padding: 4px 7px; border-radius: 6px; }
+.type.curry { color: var(--curry); background: var(--curry-soft); }
+.type.salad { color: var(--salad); background: var(--salad-soft); }
+.type.dessert { color: var(--dessert); background: var(--dessert-soft); }
+.chip { font-size: 12.5px; color: var(--ink-2); background: var(--surface-2); border: 1px solid var(--line); border-radius: 999px; padding: 1px 9px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.recipe[open] .chip { background: var(--surface); }
+.need { text-align: right; display: grid; justify-items: end; gap: 3px; }
+.pips { display: flex; gap: 4px; }
+.pip { width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--line); }
+.pip.on { background: var(--accent); border-color: var(--accent); }
+.need small { color: var(--ink-3); font-size: 12px; white-space: nowrap; }
+.need .none { color: var(--warn); font-weight: 700; font-size: 13px; }
+
+.body { padding: 14px 16px 16px; display: grid; gap: 12px; }
+.teams { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px; }
+.team { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; display: grid; gap: 8px; align-content: start; }
+.team h4 { margin: 0; font: 700 12px/1 var(--body); text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-3); }
+.mon { display: grid; gap: 2px; }
+.mon a { font-weight: 700; text-decoration: none; color: var(--ink); }
+.mon a:hover { color: var(--accent); text-decoration: underline; }
+.mon .ings { color: var(--ink-2); font-size: 13px; font-variant-numeric: tabular-nums; }
+.spec { font-size: 11px; color: var(--ink-3); margin-left: 6px; font-weight: 600; }
+.surplus { font-size: 12.5px; color: var(--good); border-top: 1px dashed var(--line); padding-top: 6px; }
+.sub { font: 700 13px/1.2 var(--display); color: var(--ink-2); margin: 4px 0 0; }
+.note { font-size: 13px; color: var(--ink-3); }
+.warnnote { font-size: 13px; color: var(--warn); }
+.empty { padding: 28px; text-align: center; color: var(--ink-2); background: var(--surface); border: 1px dashed var(--line); border-radius: 12px; }
+
+.about { margin-top: 36px; color: var(--ink-2); font-size: 13.5px; display: grid; gap: 8px; max-width: 72ch; }
+.about h2 { font-size: 17px; color: var(--ink); }
+.about ul { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
+@media (max-width: 520px) {
+  .recipe > summary { grid-template-columns: 1fr; }
+  .need { justify-items: start; text-align: left; grid-row: 2; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .seg button, .tabs button { transition: background-color .15s, color .15s, border-color .15s; }
+}
+</style>
+
+<div class="wrap">
+  <div class="eyebrow">Pokémon Sleep · cooking</div>
+  <h1>Pot Planner</h1>
+  <p class="lede">The fewest Pokémon whose daily ingredients cover a recipe for <strong>all 3 meals a day</strong>, plus every recipe a pair of Pokémon can cook alone. Results come from the Neroli's Lab (SleepAPI) team solver.</p>
+
+  <div class="controls">
+    <div class="field">
+      <span class="eyebrow">Pokémon level</span>
+      <div class="seg" id="level" role="group" aria-label="Pokémon level"></div>
+    </div>
+    <div class="field">
+      <span class="eyebrow">Meal type</span>
+      <div class="seg" id="type" role="group" aria-label="Meal type"></div>
+    </div>
+    <div class="field grow">
+      <label class="eyebrow" for="q">Find recipe, Pokémon or ingredient</label>
+      <input type="search" id="q" placeholder="e.g. Ninja Curry, Blissey, Soybeans">
+    </div>
+  </div>
+
+  <div class="tabs" role="tablist">
+    <button role="tab" id="tab-all" data-view="all" aria-selected="true">Fewest Pokémon per recipe</button>
+    <button role="tab" id="tab-duo" data-view="duo" aria-selected="false">Recipes 2 Pokémon can cook</button>
+  </div>
+
+  <div class="summary" id="summary"></div>
+  <p class="note" id="viewnote"></p>
+  <div class="list" id="list"></div>
+
+  <section class="about">
+    <h2>How these numbers are made</h2>
+    <ul>
+      <li>A team "covers" a recipe when its average ingredients per day, divided by 3 meals, reach every amount in the recipe at max pot size. Surplus shows what's left over per meal.</li>
+      <li>Each Pokémon uses an ingredient-focused build: Quiet nature, Ingredient Finder M, Helping Speed M and Ingredient Finder S (as the level allows), max main skill and max sleep ribbon. Sleep 21:30–06:00, no Good Camp Ticket, no cooking-skill bonuses beyond what support Pokémon add.</li>
+      <li>Ingredients listed per Pokémon are its slots at Lv 1 / 30 / 60. Only slots unlocked at the chosen level are shown.</li>
+      <li>"Search cut short" means the solver hit its time limit, so a smaller team could exist. Real teams with weaker natures or subskills produce less.</li>
+      <li>Sources: <a href="https://sleepapi.net" target="_blank" rel="noopener">sleepapi.net</a> / <a href="https://nerolislab.com" target="_blank" rel="noopener">Neroli's Lab</a> (solver and data, <a href="https://github.com/SleepAPI/SleepAPI" target="_blank" rel="noopener">source</a>); Pokémon links open <a href="https://pks.raenonx.cc/en/meal" target="_blank" rel="noopener">pks.raenonx.cc</a>. Data computed <span id="stamp"></span>.</li>
+    </ul>
+  </section>
+</div>
+
+<script>
+const DATA = /*__DATA__*/null;
+const STAMP = "2026-09-23";
+const LEVELS = Object.keys(DATA.levels);
+const TYPES = [["all", "All"], ["curry", "Curry"], ["salad", "Salad"], ["dessert", "Dessert"]];
+const state = { level: "60", type: "all", q: "", view: "all" };
+try {
+  const s = JSON.parse(localStorage.getItem("potplanner") || "{}");
+  if (LEVELS.includes(s.level)) state.level = s.level;
+  if (TYPES.some(t => t[0] === s.type)) state.type = s.type;
+} catch (e) {}
+if (location.hash === "#duo") state.view = "duo";
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+const ingName = k => DATA.names.ingredients[k] || k;
+const mon = k => DATA.names.pokemon[k] || { d: k };
+const slots = lv => (lv >= 60 ? 3 : lv >= 30 ? 2 : 1);
+const SPEC = { berry: "Berries", ingredient: "Ingredients", skill: "Skills", all: "All" };
+
+function seg(el, items, key) {
+  el.innerHTML = items.map(([v, label]) => `<button type="button" data-v="${v}" aria-pressed="${state[key] === v}">${label}</button>`).join("");
+  el.onclick = e => {
+    const b = e.target.closest("button"); if (!b) return;
+    state[key] = b.dataset.v; save(); seg(el, items, key); render();
+  };
+}
+function save() { try { localStorage.setItem("potplanner", JSON.stringify({ level: state.level, type: state.type })); } catch (e) {} }
+
+function teamsOf(r) {
+  // Show only unlocked ingredient slots, then drop teams that look identical at this level.
+  const n = slots(+state.level), seen = new Set(), out = [];
+  for (const t of r.teams) {
+    const members = t.slice(0, -1).map(([p, ing]) => [p, ing.slice(0, n)]);
+    const key = members.map(m => m[0] + m[1].map(i => i.join("")).join("")).sort().join("|");
+    if (seen.has(key)) continue;
+    seen.add(key); out.push({ members, surplus: t[t.length - 1] });
+  }
+  return out;
+}
+
+function matches(r) {
+  if (state.type !== "all" && r.type !== state.type) return false;
+  const q = state.q.trim().toLowerCase();
+  if (!q) return true;
+  if (r.name.toLowerCase().includes(q)) return true;
+  if (r.ing.some(([k]) => ingName(k).toLowerCase().includes(q) || k.toLowerCase().includes(q))) return true;
+  return r.teams.some(t => t.slice(0, -1).some(([p]) => mon(p).d.toLowerCase().includes(q)));
+}
+
+function pips(n) {
+  return `<span class="pips" aria-hidden="true">${[1, 2, 3, 4, 5].map(i => `<span class="pip${n && i <= n ? " on" : ""}"></span>`).join("")}</span>`;
+}
+
+function teamHTML(t, idx) {
+  const members = t.members.map(([p, ing]) => {
+    const m = mon(p);
+    const link = m.n ? `https://pks.raenonx.cc/en/pokedex/${m.n}` : null;
+    const name = link ? `<a href="${link}" target="_blank" rel="noopener">${esc(m.d)}</a>` : esc(m.d);
+    return `<div class="mon"><div>${name}<span class="spec">${SPEC[m.s] || ""}</span></div>
+      <div class="ings">${ing.map(([k, a]) => `${esc(ingName(k))} ×${a}`).join(" · ")}</div></div>`;
+  }).join("");
+  const sur = t.surplus.filter(s => s[1] > 0);
+  return `<div class="team"><h4>Team ${idx + 1} · ${t.members.length} Pokémon</h4>${members}
+    <div class="surplus">${sur.length ? "Spare per meal: " + sur.map(([k, a]) => `${esc(ingName(k))} +${Math.floor(a)}`).join(", ") : "Exactly enough"}</div></div>`;
+}
+
+function recipeHTML(r, open) {
+  const teams = teamsOf(r);
+  const best = teams.filter(t => t.members.length === r.min);
+  const next = teams.filter(t => t.members.length === r.min + 1);
+  const need = r.min
+    ? `${pips(r.min)}<small>${r.min} Pokémon · ${r.bySize[r.min] ?? best.length} team${(r.bySize[r.min] ?? best.length) === 1 ? "" : "s"}</small>`
+    : `<span class="none">Not doable with 5</span>`;
+  return `<details class="recipe"${open ? " open" : ""} data-id="${r.id}">
+    <summary>
+      <div class="rname">${esc(r.name)} <span class="type ${r.type}">${r.type}</span></div>
+      <div class="need">${need}</div>
+      <div class="rmeta">${r.ing.map(([k, a]) => `<span class="chip">${esc(ingName(k))} ${a}</span>`).join("")}<span class="chip">${r.total} total</span></div>
+    </summary>
+    <div class="body">
+      ${!r.exhaustive ? `<p class="warnnote">Search cut short by the solver's time limit: ${r.min ?? "no"}-Pokémon teams found, a smaller one may exist.</p>` : ""}
+      ${best.length ? `<div class="teams">${best.map(teamHTML).join("")}</div>` : `<p class="note">No team of up to 5 Pokémon covers this recipe 3 times a day at Lv ${state.level}.</p>`}
+      ${best.length && r.bySize[r.min] > best.length ? `<p class="note">Showing ${best.length} of ${r.bySize[r.min]} teams of ${r.min}.</p>` : ""}
+      ${next.length ? `<p class="sub">Alternatives with ${r.min + 1} Pokémon</p><div class="teams">${next.map((t, i) => teamHTML(t, best.length + i)).join("")}</div>` : ""}
+    </div>
+  </details>`;
+}
+
+function render() {
+  const all = DATA.levels[state.level];
+  const scoped = all.filter(r => state.type === "all" || r.type === state.type);
+  const rows = all.filter(matches);
+  const by = n => scoped.filter(r => r.min === n).length;
+  const hard = scoped.filter(r => r.min === null || r.min >= 4).length;
+  $("summary").innerHTML = [
+    [by(1), "cooked by 1 Pokémon"], [by(2), "need 2 Pokémon"], [by(3), "need 3 Pokémon"], [hard, "need 4+ (or can't)"]
+  ].map(([n, l]) => `<div class="stat"><b>${n}</b><span>${l}</span></div>`).join("");
+
+  let list;
+  if (state.view === "duo") {
+    list = rows.filter(r => r.min && r.min <= 2).sort((a, b) => b.total - a.total || a.min - b.min);
+    $("viewnote").textContent = `${list.length} recipes at Lv ${state.level} that 1–2 Pokémon cover for 3 meals a day, biggest recipes first. A 1-Pokémon recipe also works with any second Pokémon.`;
+  } else {
+    list = rows.slice().sort((a, b) => (a.min ?? 9) - (b.min ?? 9) || a.total - b.total);
+    $("viewnote").textContent = `${list.length} recipes at Lv ${state.level}, fewest Pokémon first. Open a recipe to see the teams.`;
+  }
+  const openIds = new Set([...document.querySelectorAll(".recipe[open]")].map(d => d.dataset.id));
+  $("list").innerHTML = list.length ? list.map(r => recipeHTML(r, openIds.has(r.id))).join("") : `<div class="empty">No recipes match "${esc(state.q)}". Clear the search or pick another meal type.</div>`;
+  for (const b of document.querySelectorAll(".tabs button")) b.setAttribute("aria-selected", b.dataset.view === state.view);
+}
+
+seg($("level"), LEVELS.map(l => [l, "Lv " + l]), "level");
+seg($("type"), TYPES, "type");
+$("q").addEventListener("input", e => { state.q = e.target.value; render(); });
+document.querySelector(".tabs").onclick = e => {
+  const b = e.target.closest("button"); if (!b) return;
+  state.view = b.dataset.view; history.replaceState(null, "", "#" + state.view); render();
+};
+$("stamp").textContent = STAMP;
+render();
+</script>
