@@ -80,6 +80,7 @@ input[type="search"] { font: inherit; color: var(--ink); background: var(--surfa
 .type.curry { color: var(--curry); background: var(--curry-soft); }
 .type.salad { color: var(--salad); background: var(--salad-soft); }
 .type.dessert { color: var(--dessert); background: var(--dessert-soft); }
+.bonus { font: 800 13px/1 var(--display); color: var(--accent); background: var(--accent-soft); padding: 4px 8px; border-radius: 6px; font-variant-numeric: tabular-nums; }
 .chip { font-size: 12.5px; color: var(--ink-2); background: var(--surface-2); border: 1px solid var(--line); border-radius: 999px; padding: 1px 9px; white-space: nowrap; font-variant-numeric: tabular-nums; }
 .recipe[open] .chip { background: var(--surface); }
 .need { text-align: right; display: grid; justify-items: end; gap: 3px; }
@@ -130,6 +131,10 @@ input[type="search"] { font: inherit; color: var(--ink); background: var(--surfa
       <span class="eyebrow">Meal type</span>
       <div class="seg" id="type" role="group" aria-label="Meal type"></div>
     </div>
+    <div class="field">
+      <span class="eyebrow">Sort by</span>
+      <div class="seg" id="sort" role="group" aria-label="Sort by"></div>
+    </div>
     <div class="field grow">
       <label class="eyebrow" for="q">Find recipe, Pokémon or ingredient</label>
       <input type="search" id="q" placeholder="e.g. Ninja Curry, Blissey, Soybeans">
@@ -150,6 +155,7 @@ input[type="search"] { font: inherit; color: var(--ink); background: var(--surfa
     <ul>
       <li>A team "covers" a recipe when its average ingredients per day, divided by 3 meals, reach every amount in the recipe at max pot size. Surplus shows what's left over per meal.</li>
       <li>Each Pokémon uses an ingredient-focused build: Quiet nature, Ingredient Finder M, Helping Speed M and Ingredient Finder S (as the level allows), max main skill and max sleep ribbon. Sleep 21:30–06:00, no Good Camp Ticket, no cooking-skill bonuses beyond what support Pokémon add.</li>
+      <li>Bonus % is the recipe's strength bonus over the raw value of its ingredients (before recipe level and Good Camp/event bonuses).</li>
       <li>Ingredients listed per Pokémon are its slots at Lv 1 / 30 / 60. Only slots unlocked at the chosen level are shown.</li>
       <li>"Search cut short" means the solver hit its time limit, so a smaller team could exist. Real teams with weaker natures or subskills produce less.</li>
       <li>Sources: <a href="https://sleepapi.net" target="_blank" rel="noopener">sleepapi.net</a> / <a href="https://nerolislab.com" target="_blank" rel="noopener">Neroli's Lab</a> (solver and data, <a href="https://github.com/SleepAPI/SleepAPI" target="_blank" rel="noopener">source</a>); Pokémon links open <a href="https://pks.raenonx.cc/en/meal" target="_blank" rel="noopener">pks.raenonx.cc</a>. Data computed <span id="stamp"></span>.</li>
@@ -162,11 +168,13 @@ const DATA = {"levels":{"30":[{"id":"FANCY_APPLE_CURRY","name":"Fancy Apple Curr
 const STAMP = "2026-09-23";
 const LEVELS = Object.keys(DATA.levels);
 const TYPES = [["all", "All"], ["curry", "Curry"], ["salad", "Salad"], ["dessert", "Dessert"]];
-const state = { level: "60", type: "all", q: "", view: "all" };
+const SORTS = [["bonus", "Bonus %"], ["fewest", "Fewest Pokémon"]];
+const state = { level: "60", type: "all", sort: "bonus", q: "", view: "all" };
 try {
   const s = JSON.parse(localStorage.getItem("potplanner") || "{}");
   if (LEVELS.includes(s.level)) state.level = s.level;
   if (TYPES.some(t => t[0] === s.type)) state.type = s.type;
+  if (SORTS.some(t => t[0] === s.sort)) state.sort = s.sort;
 } catch (e) {}
 if (location.hash === "#duo") state.view = "duo";
 
@@ -184,7 +192,7 @@ function seg(el, items, key) {
     state[key] = b.dataset.v; save(); seg(el, items, key); render();
   };
 }
-function save() { try { localStorage.setItem("potplanner", JSON.stringify({ level: state.level, type: state.type })); } catch (e) {} }
+function save() { try { localStorage.setItem("potplanner", JSON.stringify({ level: state.level, type: state.type, sort: state.sort })); } catch (e) {} }
 
 function teamsOf(r) {
   // Show only unlocked ingredient slots, then drop teams that look identical at this level.
@@ -233,7 +241,7 @@ function recipeHTML(r, open) {
     : `<span class="none">Not doable with 5</span>`;
   return `<details class="recipe"${open ? " open" : ""} data-id="${r.id}">
     <summary>
-      <div class="rname">${esc(r.name)} <span class="type ${r.type}">${r.type}</span></div>
+      <div class="rname">${esc(r.name)} <span class="type ${r.type}">${r.type}</span><span class="bonus" title="Recipe bonus over the raw ingredient value">+${r.bonus}%</span></div>
       <div class="need">${need}</div>
       <div class="rmeta">${r.ing.map(([k, a]) => `<span class="chip">${esc(ingName(k))} ${a}</span>`).join("")}<span class="chip">${r.total} total</span></div>
     </summary>
@@ -256,13 +264,19 @@ function render() {
     [by(1), "cooked by 1 Pokémon"], [by(2), "need 2 Pokémon"], [by(3), "need 3 Pokémon"], [hard, "need 4+ (or can't)"]
   ].map(([n, l]) => `<div class="stat"><b>${n}</b><span>${l}</span></div>`).join("");
 
+  const fewest = (a, b) => (a.min ?? 9) - (b.min ?? 9);
+  const byBonus = (a, b) => b.bonus - a.bonus;
+  const order = state.sort === "bonus"
+    ? (a, b) => byBonus(a, b) || fewest(a, b) || a.total - b.total
+    : (a, b) => fewest(a, b) || byBonus(a, b) || a.total - b.total;
+  const orderLabel = state.sort === "bonus" ? "highest bonus first" : "fewest Pokémon first, then highest bonus";
   let list;
   if (state.view === "duo") {
-    list = rows.filter(r => r.min && r.min <= 2).sort((a, b) => b.total - a.total || a.min - b.min);
-    $("viewnote").textContent = `${list.length} recipes at Lv ${state.level} that 1–2 Pokémon cover for 3 meals a day, biggest recipes first. A 1-Pokémon recipe also works with any second Pokémon.`;
+    list = rows.filter(r => r.min && r.min <= 2).sort(order);
+    $("viewnote").textContent = `${list.length} recipes at Lv ${state.level} that 1–2 Pokémon cover for 3 meals a day, ${orderLabel}. A 1-Pokémon recipe also works with any second Pokémon.`;
   } else {
-    list = rows.slice().sort((a, b) => (a.min ?? 9) - (b.min ?? 9) || a.total - b.total);
-    $("viewnote").textContent = `${list.length} recipes at Lv ${state.level}, fewest Pokémon first. Open a recipe to see the teams.`;
+    list = rows.slice().sort(order);
+    $("viewnote").textContent = `${list.length} recipes at Lv ${state.level}, ${orderLabel}. Open a recipe to see the teams.`;
   }
   const openIds = new Set([...document.querySelectorAll(".recipe[open]")].map(d => d.dataset.id));
   $("list").innerHTML = list.length ? list.map(r => recipeHTML(r, openIds.has(r.id))).join("") : `<div class="empty">No recipes match "${esc(state.q)}". Clear the search or pick another meal type.</div>`;
@@ -271,6 +285,7 @@ function render() {
 
 seg($("level"), LEVELS.map(l => [l, "Lv " + l]), "level");
 seg($("type"), TYPES, "type");
+seg($("sort"), SORTS, "sort");
 $("q").addEventListener("input", e => { state.q = e.target.value; render(); });
 document.querySelector(".tabs").onclick = e => {
   const b = e.target.closest("button"); if (!b) return;
