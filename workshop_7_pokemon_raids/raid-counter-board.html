@@ -166,6 +166,12 @@ h1,h2,h3{font-family:"Bricolage Grotesque","Public Sans",ui-sans-serif,system-ui
   border-radius:4px;padding:1px 5px 2px;
 }
 
+.brow .nt{font-size:13.5px;color:var(--muted);margin-top:7px;line-height:1.5}
+.brow.warn{background:var(--warn-bg)}
+.brow.warn .rk,.brow.warn .nm,.brow.warn .nt{color:var(--warn)}
+.brow.warn .mv{background:transparent;border-color:color-mix(in srgb,var(--warn) 35%,transparent);color:var(--warn)}
+.brow.warn .via{background:var(--warn);color:var(--surface)}
+
 /* ---- search results ---- */
 .res-type{
   display:inline-block;font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:600;
@@ -736,6 +742,29 @@ const BOSS = {
 
 const CATN = {mega:'Mega / Primal',shadowleg:'Shadow Legendary',shadow:'Shadow',legend:'Legendary',regular:'Non-Legendary'};
 
+const SC = {
+ fire:{"Mega Delphox":37.51,"Mega Blaziken":32.67,"Shadow Reshiram":32.13,"Shadow Chandelure":27.76,"Shadow Blaziken":27.26,"Blacephalon":31.74,"Reshiram":27.28,"Heatran":24.24,"Volcarona":24.16,"Chandelure":23.83},
+ water:{"Mega Greninja":34.20,"Primal Kyogre":33.07,"Shadow Kyogre":28.74,"Shadow Greninja":25.11,"Shadow Kingler":24.97,"Kyogre":24.59,"Volcanion":20.43,"Origin Forme Palkia":19.48,"Inteleon":23.68,"Quaquaval":22.98},
+ grass:{"Mega Chesnaught":30.68,"Mega Sceptile":30.11,"Shadow Groudon":20.86,"Shadow Chesnaught":24.82,"Shadow Sceptile":24.21,"Kartana":25.90,"Shaymin (Sky Forme)":24.58,"Zarude":23.74,"Rillaboom":23.11,"Roserade":21.71},
+ electric:{"Mega Raichu Y":34.25,"Mega Raichu X":31.46,"Shadow Raikou":26.99,"Shadow Electivire":26.15,"Shadow Magnezone":25.37,"Zeraora":27.41,"Regieleki":27.39,"Xurkitree":26.32,"Electivire":22.60,"Magnezone":21.69},
+ ice:{"Mega Mewtwo Y":30.98,"Mega Abomasnow":24.29,"Shadow Mewtwo":25.66,"Shadow Mamoswine":27.44,"Shadow Weavile":24.74,"White Kyurem":34.89,"Black Kyurem":32.28,"Crowned Shield Zamazenta":24.88,"Baxcalibur":24.63,"Galarian Darmanitan":23.86},
+ dragon:{"Mega Rayquaza":36.18,"Mega Dragonite":34.39,"Shadow Palkia":28.32,"Shadow Garchomp":29.41,"Shadow Haxorus":28.99,"Eternatus":36.13,"Black Kyurem":33.20,"White Kyurem":30.31,"Baxcalibur":27.40,"Haxorus":25.28},
+ psychic:{"Mega Mewtwo Y":48.86,"Mega Mewtwo X":40.62,"Shadow Mewtwo":34.85,"Shadow Metagross":27.19,"Shadow Alakazam":25.92,"Mewtwo":29.70,"Deoxys (Normal Forme)":29.25,"Dusk Mane Necrozma":26.61,"Metagross":22.99,"Espeon":22.77},
+ ghost:{"Mega Gengar":31.54,"Mega Mewtwo Y":30.96,"Shadow Darkrai":28.97,"Shadow Chandelure":27.22,"Shadow Gengar":24.39,"Dawn Wings Necrozma":32.66,"Black Kyurem":25.22,"Lunala":25.18,"Gholdengo":23.84,"Dragapult":23.83},
+ dark:{"Mega Houndoom":35.33,"Mega Tyranitar":30.49,"Shadow Darkrai":30.99,"Shadow Hydreigon":29.41,"Shadow Tyranitar":29.21,"Darkrai":26.36,"Hoopa Unbound":22.50,"Yveltal":22.47,"Hydreigon":24.84,"Tyranitar":24.61},
+ fighting:{"Mega Mewtwo X":43.35,"Mega Lucario":36.79,"Shadow Mewtwo":25.43,"Shadow Blaziken":29.35,"Shadow Conkeldurr":28.19,"Keldeo (Resolute Forme)":31.89,"Terrakion":26.89,"Urshifu (Rapid Strike Style)":24.15,"Lucario":27.09,"Blaziken":25.45},
+ steel:{"Mega Lucario":30.43,"Mega Metagross":29.82,"Shadow Dialga":26.21,"Shadow Metagross":29.84,"Shadow Excadrill":24.06,"Crowned Sword Zacian":36.19,"Crowned Shield Zamazenta":35.00,"Dusk Mane Necrozma":34.53,"Metagross":25.16,"Tinkaton":23.11},
+ ground:{"Primal Groudon":33.06,"Mega Garchomp":30.13,"Shadow Groudon":28.88,"Shadow Garchomp":27.36,"Shadow Excadrill":26.51,"Landorus (Therian Forme)":26.96,"Groudon":24.67,"Landorus (Incarnate Forme)":22.43,"Garchomp":23.10,"Excadrill":22.72},
+ rock:{"Mega Diancie":31.17,"Mega Tyranitar":28.75,"Shadow Landorus (Incarnate)":23.28,"Shadow Rhyperior":30.23,"Shadow Rampardos":28.91,"Terrakion":24.00,"Nihilego":20.47,"Stakataka":19.74,"Rhyperior":25.58,"Glimmora":25.49},
+ fairy:{"Mega Gardevoir":29.96,"Mega Alakazam":24.41,"Shadow Latias":20.11,"Shadow Gardevoir":25.16,"Shadow Granbull":22.33,"Crowned Sword Zacian":27.07,"Enamorus (Incarnate Forme)":24.89,"Tapu Lele":23.15,"Gardevoir":21.48,"Togekiss":21.20},
+ flying:{"Mega Rayquaza":45.92,"Mega Skarmory":34.04,"Shadow Moltres":33.09,"Shadow Salamence":31.75,"Shadow Toucannon":30.81,"Rayquaza":33.80,"Enamorus (Incarnate Forme)":29.44,"Yveltal":28.18,"Salamence":26.87,"Toucannon":26.71},
+ poison:{"Mega Victreebel":30.53,"Mega Gengar":28.61,"Shadow Darkrai":22.32,"Shadow Overqwil":25.11,"Shadow Gengar":23.86,"Eternatus":27.71,"Nihilego":24.64,"Naganadel":24.37,"Roserade":22.55,"Overqwil":21.38},
+ bug:{"Mega Beedrill":33.71,"Mega Heracross":30.82,"Shadow Heatran":20.33,"Shadow Vikavolt":25.90,"Shadow Scizor":25.04,"Kartana":23.06,"Genesect":22.81,"Pheromosa":22.35,"Volcarona":24.31,"Vikavolt":22.22},
+ normal:{"Mega Delphox":19.73,"Mega Mewtwo Y":19.38,"Shadow Regigigas":21.10,"Shadow Gigalith":17.75,"Shadow Staraptor":16.71,"Regigigas":18.16,"Crowned Sword Zacian":18.06,"Regieleki":17.02,"Gigalith":15.46,"Staraptor":14.64},
+};
+
+const SLOTN = {mega:'Mega / Primal',shadowLeg:'Shadow Legendary',shadow:'Shadow',legendary:'Legendary',regular:'Non-Legendary'};
+
 const BANDS = [
   ['mega','Mega / Primal'],
   ['shadowLeg','Shadow Legendary'],
@@ -785,21 +814,37 @@ function tags(list, dim){
   return list.map(t=>`<span class="tag" style="--c:${T[t].l}">${T[t].n}</span>`).join(' ');
 }
 
-function pickRow(p){
-  const warn = p[3] ? ' warn' : '';
-  const flag = p[3] ? '<span class="flag">Not recommended</span>' : '';
-  const note = p[2] ? `<div class="nt">${esc(p[2])}</div>` : '';
-  return `<div class="pick${warn}"><div class="rail-c"></div><div class="body">
-    <div class="top"><span class="nm">${esc(p[0])}</span><span class="mv">${esc(p[1])}</span>${flag}</div>
-    ${note}</div></div>`;
+function atkRows(k){
+  const rows = [];
+  BANDS.forEach(([key])=>{
+    (D[k][key]||[]).forEach(p=>rows.push({
+      nm:p[0], mv:p[1], nt:p[2]||'', warn:!!p[3], cat:key, score:(SC[k]||{})[p[0]] || 0
+    }));
+  });
+  return rows.sort((a,b)=>b.score-a.score);
+}
+
+function atkRow(e, i, col){
+  return `<div class="brow${e.warn?' warn':''}">
+    <div class="rk">${i}</div>
+    <div class="bd">
+      <div class="top"><span class="nm">${esc(e.nm)}</span><span class="mv">${esc(e.mv)}</span></div>
+      <div class="meta">
+        <span class="via" style="--a:${col}">${SLOTN[e.cat]}</span>
+        ${e.warn ? '<span class="flag">Not recommended</span>' : ''}
+        <span class="sc">${e.score.toFixed(2)}</span>
+      </div>
+      ${e.nt ? `<div class="nt">${esc(e.nt)}</div>` : ''}
+    </div></div>`;
 }
 
 function paintType(){
-  const k = sel, t = T[k], d = D[k];
+  const k = sel, t = T[k];
   applyAccent(k);
-  const isNormal = k === 'normal';
+  const rows = atkRows(k);
 
   let html = `<section class="head">
+    <div class="eyebrow">Attacking type</div>
     <h2>${t.n}</h2>
     <div class="matchups">
       <div class="mrow"><span class="mlabel">Strong vs</span>${tags(t.se)}</div>
@@ -807,19 +852,23 @@ function paintType(){
     </div>
   </section>`;
 
-  if(isNormal){
+  if(k === 'normal'){
     html += `<div class="note-block"><h3>Normal is not a raid-counter type</h3>
-      <ul><li>Normal moves are never super-effective against anything, so you will not pick these for a raid.
-      Listed for completeness — the numbers run well below every other type.</li></ul></div>`;
+      <ul><li>Normal moves are never super effective against anything, so you will not pick these for a raid.
+      Listed for completeness \u2014 the numbers run well below every other type.</li></ul></div>`;
   }
 
-  BANDS.forEach(([key,label])=>{
-    const rows = d[key]; if(!rows || !rows.length) return;
-    html += `<section class="band">
-      <div class="band-h"><span>${label}</span><span class="n">${rows.length}</span><span class="line"></span></div>
-      <div class="picks">${rows.map(pickRow).join('')}</div>
-    </section>`;
-  });
+  html += `<div class="eyebrow" style="margin-bottom:9px">Top 10 attackers \u00b7 fixed tier quota</div>
+    <div class="blist">${rows.map((e,i)=>atkRow(e,i+1,T[k].l)).join('')}</div>
+    <div class="note-block">
+      <h3>How this Top 10 is built</h3>
+      <ul>
+        <li>Ranked by <b>Hub Score</b> (a DPS and TDO blend), cross-checked against Pokebattler\u2019s estimator points. Disagreements are called out on the row.</li>
+        <li>Fixed quota of <b>2 Mega/Primal</b>, <b>1 Shadow Legendary</b>, <b>2 Shadow</b>, <b>3 Legendary</b>, <b>2 non-Legendary</b> \u2014 one pick per tier bracket, then sorted by score.</li>
+        <li><b>Legendary</b> covers the raid-exclusive pool: Legendary, Mythical and Ultra Beast.</li>
+        <li>Amber rows fill a tier that has no genuine option for this type. Read the note before spending candy.</li>
+      </ul>
+    </div>`;
   view.innerHTML = html;
 }
 
@@ -827,36 +876,32 @@ function paintSearch(){
   const needle = query.toLowerCase();
   const hits = [];
   ORDER.forEach(k=>{
-    BANDS.forEach(([key,label])=>{
-      (D[k][key]||[]).forEach(p=>{
-        if(p[0].toLowerCase().includes(needle)) hits.push({k,label,p});
-      });
-    });
+    atkRows(k).forEach((e,i)=>{ if(e.nm.toLowerCase().includes(needle)) hits.push({k, e, rank:i+1}); });
   });
   applyAccent(hits.length ? hits[0].k : sel);
 
   if(!hits.length){
-    view.innerHTML = `<div class="empty">No attacker matching “${esc(query)}” in the 180 picks.</div>`;
+    view.innerHTML = `<div class="empty">No attacker matching \u201c${esc(query)}\u201d in the 180 picks.</div>`;
     return;
   }
+  hits.sort((a,b)=>a.rank-b.rank);
   let html = `<section class="head" style="padding-block:22px 12px">
     <h2 style="font-size:clamp(24px,6vw,34px);color:var(--ink)">${hits.length} match${hits.length>1?'es':''}</h2>
-    <div class="mrow" style="margin-top:10px;color:var(--muted);font-size:13px">for “${esc(query)}” across all 18 attack types</div>
-  </section><div class="picks">`;
+    <div class="mrow" style="margin-top:10px;color:var(--muted);font-size:13px">for \u201c${esc(query)}\u201d across all 18 attack types</div>
+  </section><div class="blist">`;
   hits.forEach(h=>{
-    const warn = h.p[3] ? ' warn' : '';
-    const note = h.p[2] ? `<div class="nt">${esc(h.p[2])}</div>` : '';
-    html += `<div class="pick${warn}"><div class="rail-c" style="background:${T[h.k].l}"></div><div class="body">
-      <div class="top">
-        <span class="res-type" style="--c:${T[h.k].l};background:${T[h.k].l};color:#fff">${T[h.k].n}</span>
-        <span class="nm">${esc(h.p[0])}</span>
-        <span class="mv">${esc(h.p[1])}</span>
-      </div>
-      <div class="res-slot" style="margin-top:6px">${h.label}</div>
-      ${note}</div></div>`;
+    const e = h.e;
+    html += `<div class="brow${e.warn?' warn':''}">
+      <div class="rk" style="color:${T[h.k].l}">#${h.rank}</div>
+      <div class="bd">
+        <div class="top"><span class="via" style="--a:${T[h.k].l}">${T[h.k].n}</span><span class="nm">${esc(e.nm)}</span><span class="mv">${esc(e.mv)}</span></div>
+        <div class="meta"><span class="cat">${SLOTN[e.cat]}</span>
+        ${e.warn ? '<span class="flag">Not recommended</span>' : ''}
+        <span class="sc">${e.score.toFixed(2)}</span></div>
+        ${e.nt ? `<div class="nt">${esc(e.nt)}</div>` : ''}
+      </div></div>`;
   });
-  html += `</div>`;
-  view.innerHTML = html;
+  view.innerHTML = html + `</div>`;
 }
 
 function bossRow(e, i){
