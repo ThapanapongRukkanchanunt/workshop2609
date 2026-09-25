@@ -53,9 +53,9 @@ so a glassy pick may in practice fall short of a bulkier one. For a specific bos
 | 5 | **Shadow Conkeldurr** ⚡ | Force Palm / Dynamic Punch | Shadow | Fighting | 28.19 |
 | 6 | **Lucario** ⚡ | Force Palm / Aura Sphere | Non-Legendary | Fighting | 27.09 |
 | 7 | **Terrakion** ⚡ | Double Kick / Sacred Sword | Legendary | Fighting | 26.89 |
-| 8 | **Keldeo (Ordinary Forme)** ⚡ | Low Kick / Sacred Sword | Legendary | Fighting | 25.52 |
-| 9 | **Blaziken** ⚡ | Counter / Aura Sphere | Non-Legendary | Fighting | 25.45 |
-| 10 | **Shadow Mewtwo** ⚡ | Counter / Focus Blast | Shadow Legendary | Fighting | 25.43 |
+| 8 | **Blaziken** ⚡ | Counter / Aura Sphere | Non-Legendary | Fighting | 25.45 |
+| 9 | **Shadow Mewtwo** ⚡ | Counter / Focus Blast | Shadow Legendary | Fighting | 25.43 |
+| 10 | **Urshifu (Rapid Strike Style)** ⚡ | Counter / Dynamic Punch | Legendary | Fighting | 24.15 |
 
 ## Boss: Fire
 

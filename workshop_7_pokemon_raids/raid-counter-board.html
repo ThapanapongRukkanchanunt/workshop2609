@@ -268,275 +268,96 @@ const T = {
 
 /* ---------- picks: [name, moveset, note, warn?] ---------- */
 const D = {
-fire:{mega:[
- ['Mega Delphox','Fire Spin / Mystical Fire+','Hub’s #1 Fire attacker overall — 39.77 DPS.'],
- ['Mega Blaziken','Fire Spin / Blast Burn*','Doubles as a top Fighting mega — two raid types, one slot.']],
-shadowLeg:[['Shadow Reshiram','Fire Fang / Fusion Flare*','Pokebattler’s #1 Fire attacker outright (1193 pts).']],
-shadow:[
- ['Shadow Chandelure','Fire Spin / Overheat','Glass, but the highest non-Legendary Shadow DPS.'],
- ['Shadow Blaziken','Fire Spin / Blast Burn*','Fighting coverage on the same build.']],
-legendary:[
- ['Blacephalon','Incinerate / Mind Blown*','Ultra Beast — 35.45 DPS, paper-thin bulk.'],
- ['Reshiram','Fire Fang / Fusion Flare*','Non-shadow version, far bulkier.'],
- ['Heatran','Fire Spin / Magma Storm*','The durable pick — Steel typing survives.']],
-regular:[
- ['Volcarona','Fire Spin / Overheat','Best non-Legendary non-Shadow Fire.'],
- ['Chandelure','Fire Spin / Overheat','Cheap, plentiful, still ~26 DPS.']]},
-
-water:{mega:[
- ['Mega Greninja','Water Shuriken / Surf+','Hub #1. Pokebattler puts Primal Kyogre first.'],
- ['Primal Kyogre','Waterfall / Origin Pulse*','Best group boost, plus 1188 TDO.']],
-shadowLeg:[['Shadow Kyogre','Waterfall / Origin Pulse*','Top raw Water DPS you can bring six of.']],
-shadow:[
- ['Shadow Greninja','Water Shuriken / Hydro Cannon*',''],
- ['Shadow Kingler','Bubble / Crabhammer','Nearly identical DPS, much cheaper.']],
-legendary:[
- ['Kyogre','Waterfall / Origin Pulse*',''],
- ['Volcanion','Water Gun / Hydro Pump','Mythical, and bulky.'],
- ['Origin Forme Palkia','Dragon Tail / Hydro Pump','Dragon coverage on the same build.']],
-regular:[
- ['Inteleon','Water Gun / Hydro Cannon*','Best non-Legendary starter-tier Water.'],
- ['Quaquaval','Water Gun / Hydro Cannon*','']]},
-
-grass:{mega:[
- ['Mega Chesnaught','Vine Whip / Seed Bomb+','Hub #1 on Score — huge 1255 TDO.'],
- ['Mega Sceptile','Fury Cutter / Frenzy Plant*','Pokebattler’s #1 — higher DPS, lower bulk.']],
-shadowLeg:[['Shadow Groudon','Mud Shot / Solar Beam','Only real option, and Solar Beam is off-type filler. Skip unless you already have one.',1]],
-shadow:[
- ['Shadow Chesnaught','Vine Whip / Frenzy Plant*',''],
- ['Shadow Sceptile','Fury Cutter / Frenzy Plant*','Shadow Tangrowth and Venusaur are within a hair.']],
-legendary:[
- ['Kartana','Razor Leaf / Leaf Blade','Ultra Beast — highest non-Mega Grass DPS.'],
- ['Shaymin (Sky Forme)','Magical Leaf / Grass Knot',''],
- ['Zarude','Vine Whip / Power Whip','Mythical — best TDO of the three.']],
-regular:[
- ['Rillaboom','Razor Leaf / Frenzy Plant*',''],
- ['Roserade','Magical Leaf / Grass Knot','Poison coverage too.']]},
-
-electric:{mega:[
- ['Mega Raichu Y','Thunder Shock / Zap Cannon+','#1 on both sites.'],
- ['Mega Raichu X','Thunder Shock / Volt Tackle+','Mega Manectric (#9) is the budget stand-in.']],
-shadowLeg:[['Shadow Thundurus (Therian Forme)','Volt Switch / Wildbolt Storm','From Giovanni’s Shadow Incarnate Thundurus (Jan 2026), forme-changed with the Reveal Glass. Shadow Raikou (26.99) is the easier runner-up.']],
-shadow:[
- ['Shadow Electivire','Thunder Shock / Wild Charge',''],
- ['Shadow Magnezone','Volt Switch / Wild Charge','Bulkier, and Steel typing.']],
-legendary:[
- ['Zeraora','Volt Switch / Plasma Fists','Mythical.'],
- ['Regieleki','Lock-On / Thunder Cage','Highest burst, low TDO.'],
- ['Xurkitree','Thunder Shock / Discharge','Ultra Beast — 330 Attack.']],
-regular:[
- ['Electivire','Thunder Shock / Wild Charge',''],
- ['Magnezone','Volt Switch / Wild Charge','']]},
-
-ice:{mega:[
- ['Mega Mewtwo Y','Psycho Cut / Ice Beam','Best Ice mega despite having no STAB.'],
- ['Mega Abomasnow','Powder Snow / Weather Ball','The dedicated Ice mega — boosts the lobby. Mega Glalie is close behind.']],
-shadowLeg:[['Shadow Mewtwo','Psycho Cut / Ice Beam','Off-type coverage. Shadow Articuno (Frost Breath / Triple Axel) is the STAB alternative.',1]],
-shadow:[
- ['Shadow Mamoswine','Powder Snow / Avalanche','#1 dedicated Ice shadow on both sites.'],
- ['Shadow Weavile','Ice Shard / Triple Axel','Fastest charge cycling.']],
-legendary:[
- ['White Kyurem','Ice Fang / Ice Burn','#1 Ice attacker overall — 38.30 DPS.'],
- ['Black Kyurem','Dragon Tail / Freeze Shock',''],
- ['Crowned Shield Zamazenta','Ice Fang / Behemoth Bash','Ice fast move plus enormous bulk.']],
-regular:[
- ['Baxcalibur','Ice Fang / Avalanche',''],
- ['Galarian Darmanitan','Ice Fang / Avalanche','Glassy, but hits hard.']]},
-
-dragon:{mega:[
- ['Mega Rayquaza','Dragon Tail / Dragon Ascent','#1 on both sites by a landslide — 2294 pts.'],
- ['Mega Dragonite','Dragon Tail / Outrage+','Mega Garchomp is a near-tie.']],
-shadowLeg:[['Shadow Palkia','Dragon Tail / Draco Meteor','Shadow Dialga is the bulkier alternative.']],
-shadow:[
- ['Shadow Garchomp','Dragon Tail / Breaking Swipe',''],
- ['Shadow Haxorus','Dragon Tail / Breaking Swipe','Higher DPS, lower TDO than Garchomp.']],
-legendary:[
- ['Eternatus','Dragon Tail / Dynamax Cannon','Essentially ties Mega Rayquaza on Hub’s score.'],
- ['Black Kyurem','Dragon Tail / Freeze Shock',''],
- ['White Kyurem','Dragon Breath / Ice Burn','']],
-regular:[
- ['Baxcalibur','Ice Fang / Glaive Rush','Best non-Legendary Dragon.'],
- ['Haxorus','Dragon Tail / Breaking Swipe','']]},
-
-psychic:{mega:[
- ['Mega Mewtwo Y','Psycho Cut / Future Sight+','51.88 DPS — the single highest number in the game.'],
- ['Mega Mewtwo X','Confusion / Psystrike*','']],
-shadowLeg:[['Shadow Mewtwo','Psycho Cut / Psystrike*','']],
-shadow:[
- ['Shadow Metagross','Zen Headbutt / Psychic','Steel typing means it survives.'],
- ['Shadow Alakazam','Confusion / Psychic*','Pure glass cannon.']],
-legendary:[
- ['Mewtwo','Psycho Cut / Psystrike*',''],
- ['Deoxys (Normal Forme)','Zen Headbutt / Psycho Boost','36.15 DPS, 360 TDO — dies instantly.'],
- ['Dusk Mane Necrozma','Psycho Cut / Sunsteel Strike','Most durable Psychic in the meta.']],
-regular:[
- ['Metagross','Zen Headbutt / Psychic',''],
- ['Espeon','Confusion / Psychic','']]},
-
-ghost:{mega:[
- ['Mega Gengar','Lick / Shadow Ball',''],
- ['Mega Mewtwo Y','Psycho Cut / Shadow Ball','Better TDO than Gengar.']],
-shadowLeg:[['Shadow Darkrai','Snarl / Shadow Ball','Dark and Ghost in one build.']],
-shadow:[
- ['Shadow Chandelure','Hex / Shadow Ball',''],
- ['Shadow Gengar','Lick / Shadow Ball','']],
-legendary:[
- ['Dawn Wings Necrozma','Psycho Cut / Moongeist Beam','#1 Ghost on both sites.'],
- ['Black Kyurem','Shadow Claw / Freeze Shock',''],
- ['Lunala','Shadow Claw / Shadow Ball','770 TDO.']],
-regular:[
- ['Gholdengo','Hex / Shadow Ball','Best non-Legendary Ghost.'],
- ['Dragapult','Astonish / Shadow Ball','']]},
-
-dark:{mega:[
- ['Mega Houndoom','Snarl / Dark Pulse+','Hub #1 — 37.93 DPS.'],
- ['Mega Tyranitar','Bite / Brutal Swing','Pokebattler’s #1 — 1370 TDO makes it the practical choice.']],
-shadowLeg:[['Shadow Darkrai','Snarl / Foul Play','']],
-shadow:[
- ['Shadow Hydreigon','Bite / Brutal Swing',''],
- ['Shadow Tyranitar','Bite / Brutal Swing','']],
-legendary:[
- ['Darkrai','Snarl / Foul Play','Mythical.'],
- ['Hoopa Unbound','Astonish / Dark Pulse',''],
- ['Yveltal','Snarl / Dark Pulse','Best bulk of the three.']],
-regular:[
- ['Hydreigon','Bite / Brutal Swing',''],
- ['Tyranitar','Bite / Brutal Swing','Kingambit (#21) is a strong budget option.']]},
-
-fighting:{mega:[
- ['Mega Mewtwo X','Counter / Dynamic Punch+','46.08 DPS, 1384 TDO — best attacker in the game on Hub’s score.'],
- ['Mega Lucario','Force Palm / Aura Sphere','Steel typing survives Fighting-weak bosses.']],
-shadowLeg:[['Shadow Mewtwo','Counter / Focus Blast','Shadow Raikou with Aura Sphere is the runner-up.']],
-shadow:[
- ['Shadow Blaziken','Counter / Aura Sphere',''],
- ['Shadow Conkeldurr','Force Palm / Dynamic Punch','Bulkier than Blaziken.']],
-legendary:[
- ['Keldeo (Resolute Forme)','Low Kick / Secret Sword','Mythical — 906 TDO.'],
- ['Terrakion','Double Kick / Sacred Sword','Rock coverage too.'],
- ['Urshifu (Rapid Strike Style)','Counter / Dynamic Punch','']],
-regular:[
- ['Lucario','Force Palm / Aura Sphere',''],
- ['Blaziken','Counter / Aura Sphere','Machamp (#37) remains the cheapest usable option.']]},
-
-steel:{mega:[
- ['Mega Lucario','Force Palm / Meteor Mash',''],
- ['Mega Metagross','Bullet Punch / Meteor Mash','1323 TDO. Mega Skarmory (#9) is the cheap alternative.']],
-shadowLeg:[['Shadow Dialga','Metal Claw / Iron Head','']],
-shadow:[
- ['Shadow Metagross','Bullet Punch / Meteor Mash','Top non-Legendary Steel on both sites.'],
- ['Shadow Excadrill','Metal Claw / Iron Head','']],
-legendary:[
- ['Crowned Sword Zacian','Metal Claw / Behemoth Blade','#1 Steel — 1416 TDO.'],
- ['Crowned Shield Zamazenta','Metal Claw / Behemoth Bash','1443 TDO — tankiest attacker in the game.'],
- ['Dusk Mane Necrozma','Metal Claw / Sunsteel Strike','']],
-regular:[
- ['Metagross','Bullet Punch / Meteor Mash','Still excellent value.'],
- ['Tinkaton','Fairy Wind / Gigaton Hammer','Fairy coverage on the same build.']]},
-
-ground:{mega:[
- ['Primal Groudon','Mud Shot / Precipice Blades','#1 on both sites — covers Electric, Poison, Rock and Steel bosses, and adds Fire.'],
- ['Mega Garchomp','Mud Shot / Earth Power','']],
-shadowLeg:[['Shadow Groudon','Mud Shot / Precipice Blades','']],
-shadow:[
- ['Shadow Garchomp','Mud Shot / Earth Power',''],
- ['Shadow Excadrill','Mud-Slap / Scorching Sands','Highest Ground DPS among the cheap options.']],
-legendary:[
- ['Landorus (Therian Forme)','Mud Shot / Sandsear Storm',''],
- ['Groudon','Mud Shot / Precipice Blades',''],
- ['Landorus (Incarnate Forme)','Mud Shot / Earth Power','']],
-regular:[
- ['Garchomp','Mud Shot / Earth Power',''],
- ['Excadrill','Mud-Slap / Scorching Sands','Rhyperior (#20) is the bulk option.']]},
-
-rock:{mega:[
- ['Mega Diancie','Rock Throw / Rock Slide','#1 on both sites.'],
- ['Mega Tyranitar','Smack Down / Stone Edge','1106 TDO. Mega Aerodactyl (#6) is cheaper.']],
-shadowLeg:[['Shadow Landorus (Incarnate)','Rock Throw / Rock Slide','Off-type filler. Shadow Regirock (#38) is the STAB alternative — neither is worth building over the shadows below.',1]],
-shadow:[
- ['Shadow Rhyperior','Smack Down / Rock Wrecker','#2 Rock overall — best all-round Rock attacker.'],
- ['Shadow Rampardos','Smack Down / Rock Slide','Highest Rock DPS in the game, but 420 TDO — dies fast.']],
-legendary:[
- ['Terrakion','Smack Down / Rock Slide','Fighting coverage.'],
- ['Nihilego','Poison Jab / Rock Slide','Ultra Beast — 644 TDO.'],
- ['Stakataka','Rock Throw / Stone Edge','Ultra Beast — 619 TDO.']],
-regular:[
- ['Rhyperior','Smack Down / Rock Wrecker','The workhorse.'],
- ['Glimmora','Rock Throw / Meteor Beam','Beats Rampardos on Score.']]},
-
-fairy:{mega:[
- ['Mega Gardevoir','Charm / Dazzling Gleam','#1 on both sites by a wide margin.'],
- ['Mega Alakazam','Psycho Cut / Dazzling Gleam','Mega Gallade (#6) is the bulkier option.']],
-shadowLeg:[['Shadow Latias','Charm / Outrage','Only Shadow Legendary with a Fairy fast move, and it has no Fairy charged move at all. Not worth building.',1]],
-shadow:[
- ['Shadow Gardevoir','Charm / Dazzling Gleam','Best Shadow Fairy on both sites.'],
- ['Shadow Granbull','Charm / Play Rough','Cheap and genuinely usable.']],
-legendary:[
- ['Crowned Sword Zacian','Metal Claw / Play Rough','982 TDO.'],
- ['Enamorus (Incarnate Forme)','Fairy Wind / Dazzling Gleam',''],
- ['Tapu Lele','Astonish / Nature’s Madness','Tapu Koko and Xerneas are within a point.']],
-regular:[
- ['Gardevoir','Charm / Dazzling Gleam',''],
- ['Togekiss','Charm / Dazzling Gleam','680 TDO — the durable option.']]},
-
-flying:{mega:[
- ['Mega Rayquaza','Air Slash / Dragon Ascent','48.24 DPS, 1693 TDO — the best single attacker listed anywhere here.'],
- ['Mega Skarmory','Air Slash / Drill Peck+','']],
-shadowLeg:[['Shadow Moltres','Wing Attack / Fly','#3 Flying on both sites.']],
-shadow:[
- ['Shadow Salamence','Fire Fang / Fly',''],
- ['Shadow Toucannon','Peck / Beak Blast','Surprisingly high DPS — 35.47.']],
-legendary:[
- ['Rayquaza','Air Slash / Dragon Ascent','Non-mega, still #3 on Hub.'],
- ['Enamorus (Incarnate Forme)','Fairy Wind / Fly',''],
- ['Yveltal','Gust / Oblivion Wing','859 TDO.']],
-regular:[
- ['Salamence','Fire Fang / Fly',''],
- ['Toucannon','Peck / Beak Blast','Staraptor (#24) is the budget pick.']]},
-
-poison:{mega:[
- ['Mega Victreebel','Acid / Acid Spray+','Hub #1 — 33.02 DPS.'],
- ['Mega Gengar','Lick / Sludge Bomb','Mega Beedrill is a close third.']],
-shadowLeg:[['Shadow Darkrai','Snarl / Sludge Bomb','Off-type fast move, but still #10 overall.']],
-shadow:[
- ['Shadow Overqwil','Poison Jab / Sludge Bomb','Best non-Legendary Poison on both sites.'],
- ['Shadow Gengar','Lick / Sludge Bomb','']],
-legendary:[
- ['Eternatus','Poison Jab / Dynamax Cannon','Pokebattler’s runaway #1 Poison.'],
- ['Nihilego','Poison Jab / Sludge Bomb','Ultra Beast — 843 TDO.'],
- ['Naganadel','Poison Jab / Sludge Bomb','Ultra Beast.']],
-regular:[
- ['Roserade','Poison Jab / Sludge Bomb',''],
- ['Overqwil','Poison Jab / Sludge Bomb','Revavroom (#18) has the best bulk here.']]},
-
-bug:{mega:[
- ['Mega Beedrill','Bug Bite / Fell Stinger+','39.01 DPS — Hub #1.'],
- ['Mega Heracross','Fury Cutter / Megahorn','Pokebattler’s #1 — 812 TDO.']],
-shadowLeg:[['Shadow Heatran','Bug Bite / Magma Storm','The only Shadow Legendary with a Bug move. Do not build this for Bug — use the shadows below.',1]],
-shadow:[
- ['Shadow Vikavolt','Bug Bite / X-Scissor','Best Bug shadow on both sites.'],
- ['Shadow Scizor','Fury Cutter / X-Scissor','Steel typing helps it live.']],
-legendary:[
- ['Kartana','Fury Cutter / X-Scissor','Ultra Beast — Grass coverage too.'],
- ['Genesect','Fury Cutter / X-Scissor','Mythical — 675 TDO.'],
- ['Pheromosa','Bug Bite / Bug Buzz','28.24 DPS but only 257 TDO.']],
-regular:[
- ['Volcarona','Bug Bite / Bug Buzz','Best non-Legendary Bug.'],
- ['Vikavolt','Bug Bite / X-Scissor','Kleavor and Scizor are within a point.']]},
-
-normal:{mega:[
- ['Mega Delphox','Scratch / Mystical Fire+',''],
- ['Mega Mewtwo Y','Confusion / Hyper Beam','']],
-shadowLeg:[['Shadow Regigigas','Zen Headbutt / Crush Grip','#1 Normal attacker on both sites.']],
-shadow:[
- ['Shadow Gigalith','Lock-On / Meteor Beam','Ranked on its Normal fast move.'],
- ['Shadow Staraptor','Quick Attack / Fly','']],
-legendary:[
- ['Regigigas','Zen Headbutt / Crush Grip',''],
- ['Crowned Sword Zacian','Metal Claw / Giga Impact',''],
- ['Regieleki','Lock-On / Thunder Cage','']],
-regular:[
- ['Gigalith','Lock-On / Meteor Beam',''],
- ['Staraptor','Quick Attack / Fly','']]}
+fire:{mega:[["Mega Delphox","Fire Spin / Mystical Fire+","Hub\u2019s #1 Fire attacker overall \u2014 39.77 DPS."],["Mega Blaziken","Fire Spin / Blast Burn","Doubles as a top Fighting mega \u2014 two raid types, one slot."]],
+shadowLeg:[["Shadow Reshiram","Fire Fang / Fusion Flare","Pokebattler\u2019s #1 Fire attacker outright (1193 pts)."]],
+shadow:[["Shadow Chandelure","Fire Spin / Overheat","Glass, but the highest non-Legendary Shadow DPS."],["Shadow Blaziken","Fire Spin / Blast Burn","Fighting coverage on the same build."]],
+legendary:[["Blacephalon","Incinerate / Mind Blown","Ultra Beast \u2014 35.45 DPS, paper-thin bulk."],["Reshiram","Fire Fang / Fusion Flare","Non-shadow version, far bulkier."],["Heatran","Fire Spin / Magma Storm","The durable pick \u2014 Steel typing survives."]],
+regular:[["Volcarona","Fire Spin / Overheat","Best non-Legendary non-Shadow Fire."],["Chandelure","Fire Spin / Overheat","Cheap, plentiful, still ~26 DPS."]]},
+water:{mega:[["Mega Greninja","Water Shuriken / Surf+","Hub #1. Pokebattler puts Primal Kyogre first."],["Primal Kyogre","Waterfall / Origin Pulse","Best group boost, plus 1188 TDO."]],
+shadowLeg:[["Shadow Kyogre","Waterfall / Origin Pulse","Top raw Water DPS you can bring six of."]],
+shadow:[["Shadow Greninja","Water Shuriken / Hydro Cannon",""],["Shadow Kingler","Bubble / Crabhammer","Nearly identical DPS, much cheaper."]],
+legendary:[["Kyogre","Waterfall / Origin Pulse",""],["Volcanion","Water Gun / Hydro Pump","Mythical, and bulky."],["Origin Forme Palkia","Dragon Tail / Hydro Pump","Dragon coverage on the same build."]],
+regular:[["Inteleon","Water Gun / Hydro Cannon","Best non-Legendary starter-tier Water."],["Quaquaval","Water Gun / Hydro Cannon",""]]},
+grass:{mega:[["Mega Chesnaught","Vine Whip / Seed Bomb+","Hub #1 on Score \u2014 huge 1255 TDO."],["Mega Sceptile","Fury Cutter / Frenzy Plant","Pokebattler\u2019s #1 \u2014 higher DPS, lower bulk."]],
+shadowLeg:[["Shadow Groudon","Mud Shot / Solar Beam","Solar Beam is a Grass charged move; only the Mud Shot fast move is off-type. The sole Shadow Legendary option for Grass."]],
+shadow:[["Shadow Chesnaught","Vine Whip / Frenzy Plant",""],["Shadow Sceptile","Fury Cutter / Frenzy Plant","Shadow Tangrowth and Venusaur are within a hair."]],
+legendary:[["Kartana","Razor Leaf / Leaf Blade","Ultra Beast \u2014 highest non-Mega Grass DPS."],["Shaymin (Sky Forme)","Magical Leaf / Grass Knot",""],["Zarude","Vine Whip / Power Whip","Mythical \u2014 best TDO of the three."]],
+regular:[["Rillaboom","Razor Leaf / Frenzy Plant",""],["Roserade","Magical Leaf / Grass Knot","Poison coverage too."]]},
+electric:{mega:[["Mega Raichu Y","Thunder Shock / Zap Cannon+","#1 on both sites."],["Mega Raichu X","Thunder Shock / Volt Tackle+","Mega Manectric (#9) is the budget stand-in."]],
+shadowLeg:[["Shadow Thundurus (Therian Forme)","Volt Switch / Wildbolt Storm","From Giovanni\u2019s Shadow Incarnate Thundurus (Jan 2026), forme-changed with the Reveal Glass. Shadow Raikou (26.99) is the easier runner-up."]],
+shadow:[["Shadow Electivire","Thunder Shock / Wild Charge",""],["Shadow Magnezone","Volt Switch / Wild Charge","Bulkier, and Steel typing."]],
+legendary:[["Zeraora","Volt Switch / Plasma Fists","Mythical."],["Regieleki","Lock-On / Thunder Cage","Highest burst, low TDO."],["Xurkitree","Thunder Shock / Discharge","Ultra Beast \u2014 330 Attack."]],
+regular:[["Electivire","Thunder Shock / Wild Charge",""],["Magnezone","Volt Switch / Wild Charge",""]]},
+ice:{mega:[["Mega Mewtwo Y","Psycho Cut / Ice Beam","Highest Ice output, but its mega aura is Psychic \u2014 it does not boost the lobby\u2019s Ice damage."],["Mega Mewtwo X","Psycho Cut / Ice Beam","Same caveat: no Ice aura. Mega Abomasnow (24.29) and Mega Glalie (23.82) are the dedicated Ice megas."]],
+shadowLeg:[["Shadow Mewtwo","Psycho Cut / Ice Beam","Ice Beam off a 300-Attack body. Shadow Articuno (22.67) is the STAB alternative."]],
+shadow:[["Shadow Mamoswine","Powder Snow / Avalanche","#1 dedicated Ice shadow on both sites."],["Shadow Weavile","Ice Shard / Triple Axel","Fastest charge cycling."]],
+legendary:[["White Kyurem","Ice Fang / Ice Burn","#1 Ice attacker overall \u2014 38.30 DPS."],["Black Kyurem","Dragon Tail / Freeze Shock","Only the charged move is Ice \u2014 the fast move is off-type."],["Kyurem","Dragon Breath / Glaciate","Glaciate. Crowned Shield Zamazenta scores higher but its charged move is Steel, so it is not an Ice attacker."]],
+regular:[["Baxcalibur","Ice Fang / Avalanche",""],["Galarian Darmanitan","Ice Fang / Avalanche","Glassy, but hits hard."]]},
+dragon:{mega:[["Mega Rayquaza","Dragon Tail / Breaking Swipe","#1 on both sites by a landslide \u2014 2294 pts."],["Mega Dragonite","Dragon Tail / Outrage+","Mega Garchomp is a near-tie."]],
+shadowLeg:[["Shadow Palkia","Dragon Tail / Draco Meteor","Shadow Dialga is the bulkier alternative."]],
+shadow:[["Shadow Garchomp","Dragon Tail / Breaking Swipe",""],["Shadow Haxorus","Dragon Tail / Breaking Swipe","Higher DPS, lower TDO than Garchomp."]],
+legendary:[["Eternatus","Dragon Tail / Dynamax Cannon","Essentially ties Mega Rayquaza on Hub\u2019s score."],["Origin Forme Palkia","Dragon Tail / Spacial Rend","Spacial Rend. Outranks both Kyurem fusions here \u2014 their charged moves are Ice, not Dragon."],["Origin Forme Dialga","Dragon Breath / Roar of Time","Roar of Time; 786 TDO, the bulkiest Dragon option."]],
+regular:[["Baxcalibur","Ice Fang / Glaive Rush","Best non-Legendary Dragon."],["Haxorus","Dragon Tail / Breaking Swipe",""]]},
+psychic:{mega:[["Mega Mewtwo Y","Psycho Cut / Future Sight+","51.88 DPS \u2014 the single highest number in the game."],["Mega Mewtwo X","Confusion / Psystrike",""]],
+shadowLeg:[["Shadow Mewtwo","Psycho Cut / Psystrike",""]],
+shadow:[["Shadow Metagross","Zen Headbutt / Psychic","Steel typing means it survives."],["Shadow Alakazam","Confusion / Psychic","Pure glass cannon."]],
+legendary:[["Mewtwo","Psycho Cut / Psystrike",""],["Deoxys (Normal Forme)","Zen Headbutt / Psycho Boost","36.15 DPS, 360 TDO \u2014 dies instantly."],["Hoopa Unbound","Confusion / Psychic","Replaces Dusk Mane Necrozma, whose Sunsteel Strike is a Steel move."]],
+regular:[["Metagross","Zen Headbutt / Psychic",""],["Espeon","Confusion / Psychic",""]]},
+ghost:{mega:[["Mega Gengar","Lick / Shadow Ball",""],["Mega Mewtwo Y","Psycho Cut / Shadow Ball","Better TDO than Gengar."]],
+shadowLeg:[["Shadow Darkrai","Snarl / Shadow Ball","Dark and Ghost in one build."]],
+shadow:[["Shadow Chandelure","Hex / Shadow Ball",""],["Shadow Gengar","Lick / Shadow Ball",""]],
+legendary:[["Dawn Wings Necrozma","Psycho Cut / Moongeist Beam","#1 Ghost on both sites."],["Lunala","Shadow Claw / Shadow Ball","770 TDO."],["Darkrai","Snarl / Shadow Ball","Snarl / Shadow Ball \u2014 doubles as your best non-Shadow Dark attacker."]],
+regular:[["Gholdengo","Hex / Shadow Ball","Best non-Legendary Ghost."],["Dragapult","Astonish / Shadow Ball",""]]},
+dark:{mega:[["Mega Houndoom","Snarl / Dark Pulse+","Hub #1 \u2014 37.93 DPS."],["Mega Tyranitar","Bite / Brutal Swing","Pokebattler\u2019s #1 \u2014 1370 TDO makes it the practical choice."]],
+shadowLeg:[["Shadow Darkrai","Snarl / Foul Play",""]],
+shadow:[["Shadow Hydreigon","Bite / Brutal Swing",""],["Shadow Tyranitar","Bite / Brutal Swing",""]],
+legendary:[["Darkrai","Snarl / Foul Play","Mythical."],["Hoopa Unbound","Astonish / Dark Pulse","Only the charged move is Dark \u2014 the fast move is off-type."],["Yveltal","Snarl / Dark Pulse","Best bulk of the three."]],
+regular:[["Hydreigon","Bite / Brutal Swing",""],["Tyranitar","Bite / Brutal Swing","Kingambit (#21) is a strong budget option."]]},
+fighting:{mega:[["Mega Mewtwo X","Counter / Dynamic Punch+","46.08 DPS, 1384 TDO \u2014 best attacker in the game on Hub\u2019s score."],["Mega Lucario","Force Palm / Aura Sphere","Steel typing survives Fighting-weak bosses."]],
+shadowLeg:[["Shadow Mewtwo","Counter / Focus Blast","Shadow Raikou with Aura Sphere is the runner-up."]],
+shadow:[["Shadow Blaziken","Counter / Aura Sphere",""],["Shadow Conkeldurr","Force Palm / Dynamic Punch","Bulkier than Blaziken."]],
+legendary:[["Keldeo (Resolute Forme)","Low Kick / Secret Sword","Mythical \u2014 906 TDO. Ordinary Forme has identical stats, so it is not listed separately."],["Terrakion","Double Kick / Sacred Sword","Rock coverage too."],["Urshifu (Rapid Strike Style)","Counter / Dynamic Punch",""]],
+regular:[["Lucario","Force Palm / Aura Sphere",""],["Blaziken","Counter / Aura Sphere","Machamp (#37) remains the cheapest usable option."]]},
+steel:{mega:[["Mega Lucario","Force Palm / Meteor Mash","Only the charged move is Steel \u2014 the fast move is off-type."],["Mega Metagross","Bullet Punch / Meteor Mash","1323 TDO. Mega Skarmory (#9) is the cheap alternative."]],
+shadowLeg:[["Shadow Dialga","Metal Claw / Iron Head",""]],
+shadow:[["Shadow Metagross","Bullet Punch / Meteor Mash","Top non-Legendary Steel on both sites."],["Shadow Excadrill","Metal Claw / Iron Head",""]],
+legendary:[["Crowned Sword Zacian","Metal Claw / Behemoth Blade","#1 Steel \u2014 1416 TDO."],["Crowned Shield Zamazenta","Metal Claw / Behemoth Bash","1443 TDO \u2014 tankiest attacker in the game."],["Dusk Mane Necrozma","Metal Claw / Sunsteel Strike",""]],
+regular:[["Metagross","Bullet Punch / Meteor Mash","Still excellent value."],["Tinkaton","Fairy Wind / Gigaton Hammer","Fairy coverage on the same build."]]},
+ground:{mega:[["Primal Groudon","Mud Shot / Precipice Blades","#1 on both sites \u2014 covers Electric, Poison, Rock and Steel bosses, and adds Fire."],["Mega Garchomp","Mud Shot / Earth Power",""]],
+shadowLeg:[["Shadow Groudon","Mud Shot / Precipice Blades",""]],
+shadow:[["Shadow Garchomp","Mud Shot / Earth Power",""],["Shadow Excadrill","Mud-Slap / Scorching Sands","Highest Ground DPS among the cheap options."]],
+legendary:[["Landorus (Therian Forme)","Mud Shot / Sandsear Storm",""],["Groudon","Mud Shot / Precipice Blades",""],["Landorus (Incarnate Forme)","Mud Shot / Earth Power",""]],
+regular:[["Garchomp","Mud Shot / Earth Power",""],["Excadrill","Mud-Slap / Scorching Sands","Rhyperior (#20) is the bulk option."]]},
+rock:{mega:[["Mega Diancie","Rock Throw / Rock Slide","#1 on both sites."],["Mega Tyranitar","Smack Down / Stone Edge","1106 TDO. Mega Aerodactyl (#6) is cheaper."]],
+shadowLeg:[["Shadow Landorus (Incarnate Forme)","Rock Throw / Rock Slide","Rock Throw and Rock Slide are both Rock \u2014 a legitimate pick, and the only Shadow Legendary with a Rock charged move."]],
+shadow:[["Shadow Rhyperior","Smack Down / Rock Wrecker","#2 Rock overall \u2014 best all-round Rock attacker."],["Shadow Rampardos","Smack Down / Rock Slide","Highest Rock DPS in the game, but 420 TDO \u2014 dies fast."]],
+legendary:[["Terrakion","Smack Down / Rock Slide","Fighting coverage."],["Black Kyurem","Dragon Tail / Stone Edge","Stone Edge with no STAB, but a 700-Attack body still out-damages Nihilego. Stakataka (19.74) is next in line."],["Nihilego","Poison Jab / Rock Slide","Ultra Beast \u2014 644 TDO."]],
+regular:[["Rhyperior","Smack Down / Rock Wrecker","The workhorse."],["Glimmora","Rock Throw / Meteor Beam","Beats Rampardos on Score."]]},
+fairy:{mega:[["Mega Gardevoir","Charm / Dazzling Gleam","#1 on both sites by a wide margin."],["Mega Alakazam","Psycho Cut / Dazzling Gleam","Psychic aura, so no Fairy boost for the lobby \u2014 Mega Gardevoir at #1 covers that. Mega Gallade (#6) is bulkier."]],
+shadowLeg:[["No Shadow Legendary qualifies","","No Shadow Legendary has a Fairy charged move. Shadow Latias (Charm / Outrage) has the fast move only \u2014 its charged move is Dragon.",1]],
+shadow:[["Shadow Gardevoir","Charm / Dazzling Gleam","Best Shadow Fairy on both sites."],["Shadow Granbull","Charm / Play Rough","Cheap and genuinely usable."]],
+legendary:[["Crowned Sword Zacian","Metal Claw / Play Rough","982 TDO."],["Enamorus (Incarnate Forme)","Fairy Wind / Dazzling Gleam",""],["Tapu Lele","Astonish / Nature's Madness","Tapu Koko and Xerneas are within a point."]],
+regular:[["Gardevoir","Charm / Dazzling Gleam",""],["Togekiss","Charm / Dazzling Gleam","680 TDO \u2014 the durable option."]]},
+flying:{mega:[["Mega Rayquaza","Air Slash / Dragon Ascent","48.24 DPS, 1693 TDO \u2014 the best single attacker listed anywhere here."],["Mega Skarmory","Air Slash / Drill Peck+",""]],
+shadowLeg:[["Shadow Moltres","Wing Attack / Fly","#3 Flying on both sites."]],
+shadow:[["Shadow Salamence","Fire Fang / Fly","Only the charged move is Flying \u2014 the fast move is off-type."],["Shadow Toucannon","Peck / Beak Blast","Surprisingly high DPS \u2014 35.47."]],
+legendary:[["Rayquaza","Air Slash / Dragon Ascent","Non-mega, still #3 on Hub."],["Enamorus (Incarnate Forme)","Fairy Wind / Fly","Only the charged move is Flying \u2014 the fast move is off-type."],["Yveltal","Gust / Oblivion Wing","859 TDO."]],
+regular:[["Salamence","Fire Fang / Fly","Only the charged move is Flying \u2014 the fast move is off-type."],["Toucannon","Peck / Beak Blast","Staraptor (#24) is the budget pick."]]},
+poison:{mega:[["Mega Victreebel","Acid / Acid Spray+","Hub #1 \u2014 33.02 DPS."],["Mega Gengar","Lick / Sludge Bomb","Mega Beedrill is a close third."]],
+shadowLeg:[["Shadow Darkrai","Snarl / Sludge Bomb","Off-type fast move, but still #10 overall."]],
+shadow:[["Shadow Overqwil","Poison Jab / Sludge Bomb","Best non-Legendary Poison on both sites."],["Shadow Gengar","Lick / Sludge Bomb","Only the charged move is Poison \u2014 the fast move is off-type."]],
+legendary:[["Eternatus","Poison Jab / Sludge Bomb","Pokebattler\u2019s runaway #1 Poison."],["Nihilego","Poison Jab / Sludge Bomb","Ultra Beast \u2014 843 TDO."],["Naganadel","Poison Jab / Sludge Bomb","Ultra Beast."]],
+regular:[["Roserade","Poison Jab / Sludge Bomb",""],["Overqwil","Poison Jab / Sludge Bomb","Revavroom (#18) has the best bulk here."]]},
+bug:{mega:[["Mega Beedrill","Bug Bite / Fell Stinger+","39.01 DPS \u2014 Hub #1."],["Mega Heracross","Fury Cutter / Megahorn","Pokebattler\u2019s #1 \u2014 812 TDO."]],
+shadowLeg:[["No Shadow Legendary qualifies","","No Shadow Legendary has a Bug charged move. Shadow Heatran (Bug Bite / Magma Storm) has the fast move only \u2014 its charged move is Fire.",1]],
+shadow:[["Shadow Vikavolt","Bug Bite / X-Scissor","Best Bug shadow on both sites."],["Shadow Scizor","Fury Cutter / X-Scissor","Steel typing helps it live."]],
+legendary:[["Kartana","Fury Cutter / X-Scissor","Ultra Beast \u2014 Grass coverage too."],["Genesect","Fury Cutter / X-Scissor","Mythical \u2014 675 TDO."],["Pheromosa","Bug Bite / Bug Buzz","28.24 DPS but only 257 TDO."]],
+regular:[["Volcarona","Bug Bite / Bug Buzz","Best non-Legendary Bug."],["Vikavolt","Bug Bite / X-Scissor","Kleavor and Scizor are within a point."]]},
+normal:{mega:[["Mega Mewtwo Y","Confusion / Hyper Beam","Hyper Beam. No Normal mega aura worth using exists."],["Mega Mewtwo X","Counter / Hyper Beam","Hyper Beam."]],
+shadowLeg:[["Shadow Regigigas","Zen Headbutt / Crush Grip","#1 Normal attacker on both sites."]],
+shadow:[["Shadow Dragonite","Dragon Tail / Hyper Beam","Hyper Beam off Dragonite\u2019s Attack stat."],["Shadow Rhyperior","Smack Down / Skull Bash","Skull Bash."]],
+legendary:[["Regigigas","Zen Headbutt / Crush Grip","Only the charged move is Normal \u2014 the fast move is off-type."],["Crowned Sword Zacian","Metal Claw / Giga Impact","Only the charged move is Normal \u2014 the fast move is off-type."],["Xerneas","Geomancy / Giga Impact","Giga Impact. Replaces Regieleki, whose Thunder Cage is an Electric move."]],
+regular:[["Dragonite","Dragon Tail / Hyper Beam","Only the charged move is Normal \u2014 the fast move is off-type."],["Kommo-o","Dragon Tail / Boomburst","Boomburst \u2014 one of very few Normal charged moves on a usable Attack stat."]]},
 };
 
 const BOSS = {
@@ -548,9 +369,9 @@ const BOSS = {
   ["Shadow Conkeldurr","Force Palm","Dynamic Punch",28.19,"shadow","fighting",1],
   ["Lucario","Force Palm","Aura Sphere",27.09,"regular","fighting",1],
   ["Terrakion","Double Kick","Sacred Sword",26.89,"legend","fighting",1],
-  ["Keldeo (Ordinary Forme)","Low Kick","Sacred Sword",25.52,"legend","fighting",1],
   ["Blaziken","Counter","Aura Sphere",25.45,"regular","fighting",1],
-  ["Shadow Mewtwo","Counter","Focus Blast",25.43,"shadowleg","fighting",1]]},
+  ["Shadow Mewtwo","Counter","Focus Blast",25.43,"shadowleg","fighting",1],
+  ["Urshifu (Rapid Strike Style)","Counter","Dynamic Punch",24.15,"legend","fighting",1]]},
  fire:{w:["water", "ground", "rock"],p:[
   ["Mega Greninja","Water Shuriken","Surf+",34.20,"mega","water",1],
   ["Primal Kyogre","Waterfall","Origin Pulse",33.07,"mega","water",1],
@@ -747,20 +568,20 @@ const SC = {
  water:{"Mega Greninja":34.20,"Primal Kyogre":33.07,"Shadow Kyogre":28.74,"Shadow Greninja":25.11,"Shadow Kingler":24.97,"Kyogre":24.59,"Volcanion":20.43,"Origin Forme Palkia":19.48,"Inteleon":23.68,"Quaquaval":22.98},
  grass:{"Mega Chesnaught":30.68,"Mega Sceptile":30.11,"Shadow Groudon":20.86,"Shadow Chesnaught":24.82,"Shadow Sceptile":24.21,"Kartana":25.90,"Shaymin (Sky Forme)":24.58,"Zarude":23.74,"Rillaboom":23.11,"Roserade":21.71},
  electric:{"Mega Raichu Y":34.25,"Mega Raichu X":31.46,"Shadow Thundurus (Therian Forme)":29.75,"Shadow Electivire":26.15,"Shadow Magnezone":25.37,"Zeraora":27.41,"Regieleki":27.39,"Xurkitree":26.32,"Electivire":22.60,"Magnezone":21.69},
- ice:{"Mega Mewtwo Y":30.98,"Mega Abomasnow":24.29,"Shadow Mewtwo":25.66,"Shadow Mamoswine":27.44,"Shadow Weavile":24.74,"White Kyurem":34.89,"Black Kyurem":32.28,"Crowned Shield Zamazenta":24.88,"Baxcalibur":24.63,"Galarian Darmanitan":23.86},
- dragon:{"Mega Rayquaza":36.18,"Mega Dragonite":34.39,"Shadow Palkia":28.32,"Shadow Garchomp":29.41,"Shadow Haxorus":28.99,"Eternatus":36.13,"Black Kyurem":33.20,"White Kyurem":30.31,"Baxcalibur":27.40,"Haxorus":25.28},
- psychic:{"Mega Mewtwo Y":48.86,"Mega Mewtwo X":40.62,"Shadow Mewtwo":34.85,"Shadow Metagross":27.19,"Shadow Alakazam":25.92,"Mewtwo":29.70,"Deoxys (Normal Forme)":29.25,"Dusk Mane Necrozma":26.61,"Metagross":22.99,"Espeon":22.77},
- ghost:{"Mega Gengar":31.54,"Mega Mewtwo Y":30.96,"Shadow Darkrai":28.97,"Shadow Chandelure":27.22,"Shadow Gengar":24.39,"Dawn Wings Necrozma":32.66,"Black Kyurem":25.22,"Lunala":25.18,"Gholdengo":23.84,"Dragapult":23.83},
+ ice:{"Mega Mewtwo Y":30.98,"Mega Mewtwo X":29.76,"Shadow Mewtwo":25.66,"Shadow Mamoswine":27.44,"Shadow Weavile":24.74,"White Kyurem":34.89,"Black Kyurem":32.28,"Kyurem":23.20,"Baxcalibur":24.63,"Galarian Darmanitan":23.86},
+ dragon:{"Mega Rayquaza":36.18,"Mega Dragonite":34.39,"Shadow Palkia":28.32,"Shadow Garchomp":29.41,"Shadow Haxorus":28.99,"Eternatus":36.13,"Origin Forme Palkia":27.65,"Origin Forme Dialga":27.04,"Baxcalibur":27.40,"Haxorus":25.28},
+ psychic:{"Mega Mewtwo Y":48.86,"Mega Mewtwo X":40.62,"Shadow Mewtwo":34.85,"Shadow Metagross":27.19,"Shadow Alakazam":25.92,"Mewtwo":29.70,"Deoxys (Normal Forme)":29.25,"Hoopa Unbound":26.87,"Metagross":22.99,"Espeon":22.77},
+ ghost:{"Mega Gengar":31.54,"Mega Mewtwo Y":30.96,"Shadow Darkrai":28.97,"Shadow Chandelure":27.22,"Shadow Gengar":24.39,"Dawn Wings Necrozma":32.66,"Lunala":25.18,"Darkrai":24.66,"Gholdengo":23.84,"Dragapult":23.83},
  dark:{"Mega Houndoom":35.33,"Mega Tyranitar":30.49,"Shadow Darkrai":30.99,"Shadow Hydreigon":29.41,"Shadow Tyranitar":29.21,"Darkrai":26.36,"Hoopa Unbound":22.50,"Yveltal":22.47,"Hydreigon":24.84,"Tyranitar":24.61},
  fighting:{"Mega Mewtwo X":43.35,"Mega Lucario":36.79,"Shadow Mewtwo":25.43,"Shadow Blaziken":29.35,"Shadow Conkeldurr":28.19,"Keldeo (Resolute Forme)":31.89,"Terrakion":26.89,"Urshifu (Rapid Strike Style)":24.15,"Lucario":27.09,"Blaziken":25.45},
  steel:{"Mega Lucario":30.43,"Mega Metagross":29.82,"Shadow Dialga":26.21,"Shadow Metagross":29.84,"Shadow Excadrill":24.06,"Crowned Sword Zacian":36.19,"Crowned Shield Zamazenta":35.00,"Dusk Mane Necrozma":34.53,"Metagross":25.16,"Tinkaton":23.11},
  ground:{"Primal Groudon":33.06,"Mega Garchomp":30.13,"Shadow Groudon":28.88,"Shadow Garchomp":27.36,"Shadow Excadrill":26.51,"Landorus (Therian Forme)":26.96,"Groudon":24.67,"Landorus (Incarnate Forme)":22.43,"Garchomp":23.10,"Excadrill":22.72},
- rock:{"Mega Diancie":31.17,"Mega Tyranitar":28.75,"Shadow Landorus (Incarnate)":23.28,"Shadow Rhyperior":30.23,"Shadow Rampardos":28.91,"Terrakion":24.00,"Nihilego":20.47,"Stakataka":19.74,"Rhyperior":25.58,"Glimmora":25.49},
- fairy:{"Mega Gardevoir":29.96,"Mega Alakazam":24.41,"Shadow Latias":20.11,"Shadow Gardevoir":25.16,"Shadow Granbull":22.33,"Crowned Sword Zacian":27.07,"Enamorus (Incarnate Forme)":24.89,"Tapu Lele":23.15,"Gardevoir":21.48,"Togekiss":21.20},
+ rock:{"Mega Diancie":31.17,"Mega Tyranitar":28.75,"Shadow Landorus (Incarnate Forme)":23.28,"Shadow Rhyperior":30.23,"Shadow Rampardos":28.91,"Terrakion":24.00,"Black Kyurem":20.82,"Nihilego":20.47,"Rhyperior":25.58,"Glimmora":25.49},
+ fairy:{"Mega Gardevoir":29.96,"Mega Alakazam":24.41,"Shadow Gardevoir":25.16,"Shadow Granbull":22.33,"Crowned Sword Zacian":27.07,"Enamorus (Incarnate Forme)":24.89,"Tapu Lele":23.15,"Gardevoir":21.48,"Togekiss":21.20},
  flying:{"Mega Rayquaza":45.92,"Mega Skarmory":34.04,"Shadow Moltres":33.09,"Shadow Salamence":31.75,"Shadow Toucannon":30.81,"Rayquaza":33.80,"Enamorus (Incarnate Forme)":29.44,"Yveltal":28.18,"Salamence":26.87,"Toucannon":26.71},
  poison:{"Mega Victreebel":30.53,"Mega Gengar":28.61,"Shadow Darkrai":22.32,"Shadow Overqwil":25.11,"Shadow Gengar":23.86,"Eternatus":27.71,"Nihilego":24.64,"Naganadel":24.37,"Roserade":22.55,"Overqwil":21.38},
- bug:{"Mega Beedrill":33.71,"Mega Heracross":30.82,"Shadow Heatran":20.33,"Shadow Vikavolt":25.90,"Shadow Scizor":25.04,"Kartana":23.06,"Genesect":22.81,"Pheromosa":22.35,"Volcarona":24.31,"Vikavolt":22.22},
- normal:{"Mega Delphox":19.73,"Mega Mewtwo Y":19.38,"Shadow Regigigas":21.10,"Shadow Gigalith":17.75,"Shadow Staraptor":16.71,"Regigigas":18.16,"Crowned Sword Zacian":18.06,"Regieleki":17.02,"Gigalith":15.46,"Staraptor":14.64},
+ bug:{"Mega Beedrill":33.71,"Mega Heracross":30.82,"Shadow Vikavolt":25.90,"Shadow Scizor":25.04,"Kartana":23.06,"Genesect":22.81,"Pheromosa":22.35,"Volcarona":24.31,"Vikavolt":22.22},
+ normal:{"Mega Mewtwo Y":19.38,"Mega Mewtwo X":19.32,"Shadow Regigigas":21.10,"Shadow Dragonite":15.85,"Shadow Rhyperior":14.49,"Regigigas":18.16,"Crowned Sword Zacian":18.06,"Xerneas":15.04,"Dragonite":13.58,"Kommo-o":12.60},
 };
 
 const SLOTN = {mega:'Mega / Primal',shadowLeg:'Shadow Legendary',shadow:'Shadow',legendary:'Legendary',regular:'Non-Legendary'};
@@ -821,18 +642,18 @@ function atkRows(k){
       nm:p[0], mv:p[1], nt:p[2]||'', warn:!!p[3], cat:key, score:(SC[k]||{})[p[0]] || 0
     }));
   });
-  return rows.sort((a,b)=>b.score-a.score);
+  return rows.sort((a,b)=>(b.score||-1)-(a.score||-1));
 }
 
 function atkRow(e, i, col){
+  const none = !e.mv;
   return `<div class="brow${e.warn?' warn':''}">
-    <div class="rk">${i}</div>
+    <div class="rk">${none ? '\u2014' : i}</div>
     <div class="bd">
-      <div class="top"><span class="nm">${esc(e.nm)}</span><span class="mv">${esc(e.mv)}</span></div>
+      <div class="top"><span class="nm">${esc(e.nm)}</span>${none ? '' : `<span class="mv">${esc(e.mv)}</span>`}</div>
       <div class="meta">
         <span class="via" style="--a:${col}">${SLOTN[e.cat]}</span>
-        ${e.warn ? '<span class="flag">Not recommended</span>' : ''}
-        <span class="sc">${e.score.toFixed(2)}</span>
+        ${none ? '' : `<span class="sc">${e.score.toFixed(2)}</span>`}
       </div>
       ${e.nt ? `<div class="nt">${esc(e.nt)}</div>` : ''}
     </div></div>`;
@@ -863,10 +684,10 @@ function paintType(){
     <div class="note-block">
       <h3>How this Top 10 is built</h3>
       <ul>
-        <li>Ranked by <b>Hub Score</b> (a DPS and TDO blend), cross-checked against Pokebattler\u2019s estimator points. Disagreements are called out on the row.</li>
+        <li>Ranked by <b>Hub Score</b> (a DPS and TDO blend). An attacker only qualifies if its <b>charged move</b> is of this type \u2014 the charged move carries raid damage, so a Pok\u00e9mon with only an on-type fast move is not an attacker of this type.</li>
         <li>Fixed quota of <b>2 Mega/Primal</b>, <b>1 Shadow Legendary</b>, <b>2 Shadow</b>, <b>3 Legendary</b>, <b>2 non-Legendary</b> \u2014 one pick per tier bracket, then sorted by score.</li>
         <li><b>Legendary</b> covers the raid-exclusive pool: Legendary, Mythical and Ultra Beast.</li>
-        <li>Amber rows fill a tier that has no genuine option for this type. Read the note before spending candy.</li>
+        <li>An amber row means <b>no Pok\u00e9mon qualifies</b> for that tier \u2014 the note names the nearest miss and why it fails.</li>
       </ul>
     </div>`;
   view.innerHTML = html;
