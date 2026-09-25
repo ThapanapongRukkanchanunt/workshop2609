@@ -80,7 +80,7 @@ For every attacking type there are **10 picks**:
 |---|---|---|---|
 | Mega 1 | **Mega Raichu Y** | Thunder Shock / Zap Cannon+ | #1 on both sites. |
 | Mega 2 | **Mega Raichu X** | Thunder Shock / Volt Tackle+ | Mega Manectric (#9) is the budget stand-in. |
-| Shadow Legendary | **Shadow Raikou** | Thunder Shock / Wild Charge | ⚠️ Hub ranks Shadow Thundurus-T higher (#3) but Pokebattler doesn't list it — Raikou is the safe pick. |
+| Shadow Legendary | **Shadow Thundurus (Therian Forme)** | Volt Switch / Wildbolt Storm | #3 Electric overall. From Giovanni's Shadow Incarnate Thundurus (Jan 2026), forme-changed with the Reveal Glass. Shadow Raikou is the easier runner-up. |
 | Shadow 1 | **Shadow Electivire** | Thunder Shock / Wild Charge | |
 | Shadow 2 | **Shadow Magnezone** | Volt Switch / Wild Charge | Bulkier; Steel typing. |
 | Legendary 1 | **Zeraora** | Volt Switch / Plasma Fists | Mythical. |
