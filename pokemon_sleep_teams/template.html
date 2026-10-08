@@ -120,7 +120,7 @@ input[type="search"] { font: inherit; color: var(--ink); background: var(--surfa
 <div class="wrap">
   <div class="eyebrow">Pokémon Sleep · cooking</div>
   <h1>Pot Planner</h1>
-  <p class="lede">The fewest Pokémon whose daily ingredients cover a recipe for <strong>all 3 meals a day</strong>, plus every recipe a pair of Pokémon can cook alone. Results come from the Neroli's Lab (SleepAPI) team solver.</p>
+  <p class="lede">The fewest Pokémon whose daily ingredients cover a recipe for <strong>all 3 meals a day</strong>, plus every recipe a pair of Pokémon can cook alone. Production numbers come from the Neroli's Lab (SleepAPI) team solver, with an exact search on top.</p>
 
   <div class="controls">
     <div class="field">
@@ -157,7 +157,7 @@ input[type="search"] { font: inherit; color: var(--ink); background: var(--surfa
       <li>Each Pokémon uses an ingredient-focused build: Quiet nature, Ingredient Finder M, Helping Speed M and Ingredient Finder S (as the level allows), max main skill and max sleep ribbon. Sleep 21:30–06:00, no Good Camp Ticket, no cooking-skill bonuses beyond what support Pokémon add.</li>
       <li>Bonus % is the recipe's strength bonus over the raw value of its ingredients (before recipe level and Good Camp/event bonuses).</li>
       <li>Ingredients listed per Pokémon are its slots at Lv 1 / 30 / 60. Only slots unlocked at the chosen level are shown.</li>
-      <li>"Search cut short" means the solver hit its time limit, so a smaller team could exist. Real teams with weaker natures or subskills produce less.</li>
+      <li>The minimum team size is exact: every combination up to 5 Pokémon was checked against the solver's per-Pokémon production, which also caught smaller teams the solver's own search had missed. Teams are listed with the most slack first. Real teams with weaker natures or subskills produce less.</li>
       <li>Sources: <a href="https://sleepapi.net" target="_blank" rel="noopener">sleepapi.net</a> / <a href="https://nerolislab.com" target="_blank" rel="noopener">Neroli's Lab</a> (solver and data, <a href="https://github.com/SleepAPI/SleepAPI" target="_blank" rel="noopener">source</a>); Pokémon links open <a href="https://pks.raenonx.cc/en/meal" target="_blank" rel="noopener">pks.raenonx.cc</a>. Data computed <span id="stamp"></span>.</li>
     </ul>
   </section>
@@ -237,7 +237,7 @@ function recipeHTML(r, open) {
   const best = teams.filter(t => t.members.length === r.min);
   const next = teams.filter(t => t.members.length === r.min + 1);
   const need = r.min
-    ? `${pips(r.min)}<small>${r.min} Pokémon · ${r.bySize[r.min] ?? best.length} team${(r.bySize[r.min] ?? best.length) === 1 ? "" : "s"}</small>`
+    ? `${pips(r.min)}<small>${r.min} Pokémon · ${r.bySize[r.min] ?? best.length}${r.capped ? "+" : ""} team${(r.bySize[r.min] ?? best.length) === 1 ? "" : "s"}</small>`
     : `<span class="none">Not doable with 5</span>`;
   return `<details class="recipe"${open ? " open" : ""} data-id="${r.id}">
     <summary>
@@ -248,7 +248,7 @@ function recipeHTML(r, open) {
     <div class="body">
       ${!r.exhaustive ? `<p class="warnnote">Search cut short by the solver's time limit: ${r.min ?? "no"}-Pokémon teams found, a smaller one may exist.</p>` : ""}
       ${best.length ? `<div class="teams">${best.map(teamHTML).join("")}</div>` : `<p class="note">No team of up to 5 Pokémon covers this recipe 3 times a day at Lv ${state.level}.</p>`}
-      ${best.length && r.bySize[r.min] > best.length ? `<p class="note">Showing ${best.length} of ${r.bySize[r.min]} teams of ${r.min}.</p>` : ""}
+      ${best.length && r.bySize[r.min] > best.length ? `<p class="note">Showing the ${best.length} teams with the most slack of ${r.bySize[r.min]}${r.capped ? "+" : ""} teams of ${r.min}.</p>` : ""}
       ${next.length ? `<p class="sub">Alternatives with ${r.min + 1} Pokémon</p><div class="teams">${next.map((t, i) => teamHTML(t, best.length + i)).join("")}</div>` : ""}
     </div>
   </details>`;

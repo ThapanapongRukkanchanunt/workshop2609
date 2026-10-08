@@ -26,6 +26,7 @@ def trim(recipe):
         "min": m,
         "exhaustive": recipe["exhaustive"],
         "bySize": recipe["countBySize"],
+        "capped": recipe.get("countCapped", False),
         "teams": [[[mem["p"], mem["ing"]] for mem in t["members"]] + [t["surplus"]] for t in best + nxt],
     }
 

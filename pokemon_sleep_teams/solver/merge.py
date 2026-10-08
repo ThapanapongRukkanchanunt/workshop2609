@@ -1,6 +1,9 @@
-"""Copy solver output into ../data, replacing timed-out recipes with their longer-timeout re-runs.
+"""Copy solver output into ../data.
 
-Usage: python3 merge.py <dir with out-<lv>.json and optional out-<lv>-redo.json> 30 50 60
+Prefers out-<lv>-exact.json (exact.ts). Otherwise uses out-<lv>.json, replacing timed-out recipes with
+out-<lv>-redo.json re-runs.
+
+Usage: python3 merge.py <dir with the out-*.json files> 30 50 60
 """
 import json
 import shutil
@@ -11,9 +14,10 @@ src = Path(sys.argv[1])
 dst = Path(__file__).parent.parent / "data"
 dst.mkdir(exist_ok=True)
 for lv in sys.argv[2:]:
-    rows = json.loads((src / f"out-{lv}.json").read_text())
+    exact = src / f"out-{lv}-exact.json"
+    rows = json.loads((exact if exact.exists() else src / f"out-{lv}.json").read_text())
     redo = src / f"out-{lv}-redo.json"
-    if redo.exists():
+    if redo.exists() and not exact.exists():
         by_name = {r["name"]: r for r in json.loads(redo.read_text())}
         rows = [by_name.get(r["name"], r) for r in rows]
     (dst / f"solve-lv{lv}.json").write_text(json.dumps(rows, ensure_ascii=False))
